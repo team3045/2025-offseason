@@ -303,6 +303,11 @@ public class ElevatorPivot extends SubsystemBase {
    * @param targetHeight the desired height in meters
    */
   private void setHeightTarget(double localDesiredHeight) {
+    
+    /*
+     * LOWER (and then raise) ALGAE INTAKE EVERY TIME YOU NEED TO MOVE THE ELEVATOR (put this in when the commands are made in robot container)
+     */
+
 
     double targetRotations = convertHeightToRotations(localDesiredHeight);
 
