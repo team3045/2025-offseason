@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -80,5 +84,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.drivetrain.updateSimState(0.020, RobotController.getBatteryVoltage());
     m_field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
     SmartDashboard.putData("Field", m_field);
+    Logger.recordOutput("ComponentPoses", m_robotContainer.componentPoses);
   }
 }

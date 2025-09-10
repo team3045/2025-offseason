@@ -11,6 +11,7 @@ import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -51,6 +52,8 @@ public class RobotContainer {
   public final static ElevatorPivot elevatorPivot = new ElevatorPivot();
   public final static Claw claw = new Claw();
 
+  public static Pose3d[] componentPoses = new Pose3d[8];
+
 
   public final Trigger intakeState = new Trigger(() -> M_ROBOT_STATE.getDriveState() == DriveState.INTAKE);
   public final Trigger teleopState = new Trigger(() -> M_ROBOT_STATE.getDriveState() == DriveState.TELEOP);
@@ -89,6 +92,15 @@ public class RobotContainer {
     joystick.L2().onTrue(
       autoScoreCoralFactory.fullAutoscore()
     );
+
+    componentPoses[0] = new Pose3d();
+    componentPoses[1] = new Pose3d();
+    componentPoses[2] = new Pose3d();
+    componentPoses[3] = new Pose3d();
+    componentPoses[4] = new Pose3d();
+    componentPoses[5] = new Pose3d();
+    componentPoses[6] = new Pose3d();
+    componentPoses[7] = new Pose3d();
   }
 
   public Command getAutonomousCommand() {
