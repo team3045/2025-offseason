@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.Factories.AutoScoreCoralFactory;
+import frc.robot.Helpers.HandlerState;
 import frc.robot.RobotState.DriveState;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
+import frc.robot.Subsystems.CoralHandler;
 import frc.robot.Subsystems.ElevatorPivot;
 import frc.robot.Subsystems.Claw;
 import frc.robot.commons.GremlinLogger;
@@ -51,6 +53,7 @@ public class RobotContainer {
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final static ElevatorPivot elevatorPivot = new ElevatorPivot();
   public final static Claw claw = new Claw();
+  public final static CoralHandler intake = new CoralHandler();
 
   public static Pose3d[] componentPoses = new Pose3d[8];
 
@@ -74,11 +77,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     
-    joystick.R1().onTrue(
-      new ConditionalCommand(
-        Commands.runOnce(() -> M_ROBOT_STATE.setDriveState(DriveState.INTAKE)),
-        Commands.runOnce(() -> M_ROBOT_STATE.setDriveState(DriveState.TELEOP)), 
-        intakeState.negate()));
+    joystick.R1().onTrue(intake.runOnce(() -> intake.intake()));
+    joystick.R2().onTrue(intake.runOnce(() -> intake.outtake()));
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -92,15 +92,6 @@ public class RobotContainer {
     joystick.L2().onTrue(
       autoScoreCoralFactory.fullAutoscore()
     );
-
-    componentPoses[0] = new Pose3d();
-    componentPoses[1] = new Pose3d();
-    componentPoses[2] = new Pose3d();
-    componentPoses[3] = new Pose3d();
-    componentPoses[4] = new Pose3d();
-    componentPoses[5] = new Pose3d();
-    componentPoses[6] = new Pose3d();
-    componentPoses[7] = new Pose3d();
   }
 
   public Command getAutonomousCommand() {

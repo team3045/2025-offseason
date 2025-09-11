@@ -28,10 +28,10 @@ public class CoralHandler extends SubsystemBase {
   private double time;
 
   public CoralHandler() {
-    roller = new TalonFX(ROLLERID);
-    pivot = new TalonFX(PIVOTID);
-    indexer = new TalonFX(INDEXERID);
-    effector = new TalonFX(EFFECTORID);
+    roller = new TalonFX(ROLLERID, "Team 3045");
+    pivot = new TalonFX(PIVOTID, "Team 3045");
+    indexer = new TalonFX(INDEXERID, "Team 3045");
+    effector = new TalonFX(EFFECTORID, "Team 3045");
     stowAngle = pivot.getRotorPosition().getValueAsDouble();
     currAngle = stowAngle;
     targetAngle = stowAngle;
@@ -53,6 +53,7 @@ public class CoralHandler extends SubsystemBase {
 
   private void goToIntakingPos() {
     goToPosition(stowAngle + ANGLEDIFF);
+    System.out.println("\u001B[34m\"Going to pos\u001B[0m");
   }
 
   private boolean atTargetPos() {
@@ -82,6 +83,7 @@ public class CoralHandler extends SubsystemBase {
           roller.set(ROLLERSPEED);
           indexer.set(INDEXERSPEED);
           effector.set(EFFECTORSPEED);
+          System.out.println("\u001B[34m\"Intaking\u001B[0m");
         }
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
