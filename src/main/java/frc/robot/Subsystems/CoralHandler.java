@@ -43,10 +43,6 @@ public class CoralHandler extends SubsystemBase {
     time = Timer.getTimestamp();
   }
 
-  public void changeState(HandlerState State) {
-    state = State;
-  }
-
   public void intake() {
     timeStarted = Timer.getTimestamp();
     prevState = HandlerState.INTAKING;
@@ -63,26 +59,30 @@ public class CoralHandler extends SubsystemBase {
   public void periodic() {
     time = Timer.getTimestamp();
     SmartDashboard.putNumber("Range", rangeSupplier.get().baseUnitMagnitude());
+    SmartDashboard.putNumber("PivotCurrent", Math.abs(pivot.getTorqueCurrent().getValueAsDouble()));
+    SmartDashboard.putNumber("PivotVelocity", Math.abs(pivot.getVelocity().getValueAsDouble()));
+    SmartDashboard.putString("IntakeState", state.toString());
     // This method will be called once per scheduler run
     pivot.setNeutralMode(NeutralModeValue.Brake);
     switch (state) {
       case MOVINGDOWN:
-        pivot.set(PIVOTSPEED);
-        if (pivot.getTorqueCurrent().getValueAsDouble() > 7 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        pivot.set(-PIVOTSPEED);
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 50 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
           state = prevState;
+          pivot.set(0.03);
         }
         break;
       case MOVINGUP:
-        pivot.set(-PIVOTSPEED);
-        if (pivot.getTorqueCurrent().getValueAsDouble() > 7 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        pivot.set(PIVOTSPEED);
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 50 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
           state = prevState;
+          pivot.set(0.03);
         }
         break;
       case INTAKING:
         roller.set(ROLLERSPEED);
         indexer.set(INDEXERSPEED);
         effector.set(EFFECTORSPEED);
-        System.out.println("\\u001B[34mIntaking\\u001B[0m");
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
         }
