@@ -9,17 +9,17 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.DriveToPose;
-import frc.robot.Subsystems.Claw;
+// import frc.robot.Subsystems.Claw;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
-import frc.robot.Subsystems.ElevatorPivot;
+// import frc.robot.Subsystems.ElevatorPivot;
 import frc.robot.commons.Translation2DUtils;
 
 import static frc.robot.Constants.AutoScoreConstants.*;
 
 public class AutoScoreCoralFactory {
     private static CommandSwerveDrivetrain drivetrain = RobotContainer.drivetrain;
-    private static Claw claw = RobotContainer.claw;
-    private static ElevatorPivot elevatorPivot = RobotContainer.elevatorPivot;
+    // private static Claw claw = RobotContainer.claw;
+    // private static ElevatorPivot elevatorPivot = RobotContainer.elevatorPivot;
     private static IntegerSubscriber poleHeightSubscriber = RobotContainer.poleHeightSubscriber;
 
     private Translation2d midpoint(Translation2d a, Translation2d b) {
@@ -97,31 +97,32 @@ public class AutoScoreCoralFactory {
         return new Pose2d(closest, new Rotation2d(ROTATIONS[idx]));
     }
 
-    public Command goToScoreHeightAndDriveForwad() {
-        // long poleNum = poleHeightSubscriber.get();
-        long poleNum = 1;
-        double height = SCORE_HEIGHTS[(int) poleNum];
-        double rot = SCORE_ANGLES[(int) poleNum];
-        return elevatorPivot.goToPosition(() -> {return height;}, () -> {return rot;}).andThen(pathfindDistance(getRobotPose(), FRONT_DIST));
-    }
+    // public Command goToScoreHeightAndDriveForwad() {
+    //     // long poleNum = poleHeightSubscriber.get();
+    //     long poleNum = 1;
+    //     double height = SCORE_HEIGHTS[(int) poleNum];
+    //     double rot = SCORE_ANGLES[(int) poleNum];
+    //     return elevatorPivot.goToPosition(() -> {return height;}, () -> {return rot;}).andThen(pathfindDistance(getRobotPose(), FRONT_DIST));
+    // }
 
-    private Command stow() {
-        return elevatorPivot.stowArm();
-    }
+    // private Command stow() {
+    //     return elevatorPivot.stowArm();
+    // }
 
-    public Command reset() {
-        return pathfindDistance(getRobotPose(), -BACKUP_DIST).andThen(stow());
-    }
+    // public Command reset() {
+    //     return pathfindDistance(getRobotPose(), -BACKUP_DIST).andThen(stow());
+    // }
 
     public Command goToScorePos() {
         return new DriveToPose(drivetrain, getAutoscorePose());
     }
 
-    public Command score() {
-        return claw.outtakeGeneric();
-    }
+    // public Command score() {
+    //     return claw.outtakeGeneric();
+    // }
 
     public Command fullAutoscore() {
-        return goToScorePos().andThen(goToScoreHeightAndDriveForwad()).andThen(score()).andThen(reset());
+        // return goToScorePos().andThen(goToScoreHeightAndDriveForwad()).andThen(score()).andThen(reset());
+        return goToScorePos();
     }
 }
