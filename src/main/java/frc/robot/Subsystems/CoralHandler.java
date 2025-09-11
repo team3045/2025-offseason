@@ -10,10 +10,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Helpers.HandlerState;
 
-import static edu.wpi.first.units.Units.Inches;
 import static frc.robot.Constants.CoralIntakeConstants.*;
 
 import java.util.function.Supplier;
@@ -26,10 +26,8 @@ public class CoralHandler extends SubsystemBase {
   private TalonFX indexer;
   private TalonFX effector;
   private CANrange canRange;
-  private double currAngle;
-  private double targetAngle;
-  private double stowAngle;
   private Supplier<Distance> rangeSupplier;
+  private HandlerState prevState;
 
   private double timeStarted;
   private double time;
@@ -40,9 +38,6 @@ public class CoralHandler extends SubsystemBase {
     indexer = new TalonFX(INDEXERID, "Team 3045");
     effector = new TalonFX(EFFECTORID, "Team 3045");
     canRange = new CANrange(CANRANGEID, "Team 3045");
-    stowAngle = pivot.getRotorPosition().getValueAsDouble();
-    currAngle = stowAngle;
-    targetAngle = stowAngle;
     rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
@@ -52,66 +47,54 @@ public class CoralHandler extends SubsystemBase {
     state = State;
   }
 
-  private void goToPosition(double angle) {
-    targetAngle = angle;
-  }
-
-  private void goToStowPos() {
-    goToPosition(stowAngle);
-  }
-
-  private void goToIntakingPos() {
-    goToPosition(stowAngle + ANGLEDIFF);
-    System.out.println("\u001B[34m\"Going to pos\u001B[0m");
-  }
-
-  private boolean atTargetPos() {
-    return Math.abs(currAngle - targetAngle) <= ANGLETOLERANCE;
-  }
-
   public void intake() {
     timeStarted = Timer.getTimestamp();
-    state = HandlerState.INTAKING;
+    prevState = HandlerState.INTAKING;
+    state = HandlerState.MOVINGDOWN;
   }
 
   public void outtake() {
     timeStarted = Timer.getTimestamp();
-    state = HandlerState.OUTTAKING;
+    prevState = HandlerState.OUTTAKING;
+    state = HandlerState.MOVINGDOWN;
   }
 
   @Override
   public void periodic() {
-    currAngle = pivot.getRotorPosition().getValueAsDouble();
     time = Timer.getTimestamp();
+    SmartDashboard.putNumber("Range", rangeSupplier.get().baseUnitMagnitude());
     // This method will be called once per scheduler run
     pivot.setNeutralMode(NeutralModeValue.Brake);
     switch (state) {
-      case INTAKING:
-        goToIntakingPos();
-        if (atTargetPos()) {
-          roller.set(ROLLERSPEED);
-          indexer.set(INDEXERSPEED);
-          effector.set(EFFECTORSPEED);
-          System.out.println("\u001B[34m\"Intaking\u001B[0m");
+      case MOVINGDOWN:
+        pivot.set(PIVOTSPEED);
+        if (pivot.getTorqueCurrent().getValueAsDouble() > 7 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+          state = prevState;
         }
+        break;
+      case MOVINGUP:
+        pivot.set(-PIVOTSPEED);
+        if (pivot.getTorqueCurrent().getValueAsDouble() > 7 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+          state = prevState;
+        }
+        break;
+      case INTAKING:
+        roller.set(ROLLERSPEED);
+        indexer.set(INDEXERSPEED);
+        effector.set(EFFECTORSPEED);
+        System.out.println("\\u001B[34mIntaking\\u001B[0m");
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
         }
-        if (rangeSupplier.get().lte(Inches.of(DEFAULTCANRANGEDIST))) {
+        if (rangeSupplier.get().baseUnitMagnitude() <= DEFAULTCANRANGEDIST) {
           state = HandlerState.IDLE;
         }
         break;
       case OUTTAKING:
-        goToIntakingPos();
-        if (atTargetPos()) {
-          roller.set(-ROLLERSPEED);
-          indexer.set(-INDEXERSPEED);
-          effector.set(-EFFECTORSPEED);
-        }
+        roller.set(-ROLLERSPEED);
+        indexer.set(-INDEXERSPEED);
+        effector.set(-EFFECTORSPEED);
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
-          state = HandlerState.IDLE;
-        }
-        if (rangeSupplier.get().lte(Inches.of(DEFAULTCANRANGEDIST))) {
           state = HandlerState.IDLE;
         }
         break;
@@ -124,10 +107,8 @@ public class CoralHandler extends SubsystemBase {
         roller.set(0);
         indexer.set(0);
         effector.set(0);
-        goToStowPos();
-        if (atTargetPos()) {
-          state = HandlerState.STOWED;
-        }
+        prevState = HandlerState.STOWED;
+        state = HandlerState.MOVINGUP;
         break;
     }
   }

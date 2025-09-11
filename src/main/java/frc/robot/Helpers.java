@@ -5,6 +5,8 @@ public class Helpers {
         STOWED,
         INTAKING,
         OUTTAKING,
-        IDLE
+        IDLE,
+        MOVINGDOWN,
+        MOVINGUP
     }
 }
