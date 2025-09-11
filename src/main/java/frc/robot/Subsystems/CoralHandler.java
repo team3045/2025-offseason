@@ -4,14 +4,21 @@
 
 package frc.robot.Subsystems;
 
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Helpers.HandlerState;
+
+import static edu.wpi.first.units.Units.Inches;
 import static frc.robot.Constants.CoralIntakeConstants.*;
+
+import java.util.function.Supplier;
 
 public class CoralHandler extends SubsystemBase {
   /** Creates a new CoralHandler. */
@@ -20,9 +27,11 @@ public class CoralHandler extends SubsystemBase {
   private TalonFX pivot;
   private TalonFX indexer;
   private TalonFX effector;
+  private CANrange canRange;
   private double currAngle;
   private double targetAngle;
   private double stowAngle;
+  private Supplier<Distance> rangeSupplier;
 
   private double timeStarted;
   private double time;
@@ -32,9 +41,11 @@ public class CoralHandler extends SubsystemBase {
     pivot = new TalonFX(PIVOTID, "Team 3045");
     indexer = new TalonFX(INDEXERID, "Team 3045");
     effector = new TalonFX(EFFECTORID, "Team 3045");
+    canRange = new CANrange(CANRANGEID, "Team 3045");
     stowAngle = pivot.getRotorPosition().getValueAsDouble();
     currAngle = stowAngle;
     targetAngle = stowAngle;
+    rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
   }
@@ -88,6 +99,9 @@ public class CoralHandler extends SubsystemBase {
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
         }
+        if (rangeSupplier.get().lte(Inches.of(DEFAULTCANRANGEDIST))) {
+          state = HandlerState.IDLE;
+        }
         break;
       case OUTTAKING:
         goToIntakingPos();
@@ -97,6 +111,9 @@ public class CoralHandler extends SubsystemBase {
           effector.set(-EFFECTORSPEED);
         }
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
+          state = HandlerState.IDLE;
+        }
+        if (rangeSupplier.get().lte(Inches.of(DEFAULTCANRANGEDIST))) {
           state = HandlerState.IDLE;
         }
         break;
