@@ -4,6 +4,7 @@
 
 package frc.robot.Subsystems;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ElevatorConstants.*;
@@ -14,23 +15,61 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   private double elevatorHeight;
   private double numRotations;
+  private double targetHeight;
+  private double targetRotations;
 
-  private TalonFX elevatorMotor1 = new TalonFX(MOTOR1ID, "Team3045");
-  private TalonFX elevatorMotor2 = new TalonFX(MOTOR2ID, "Team3045");
+  private TalonFX elevatorMotor1;
+  private TalonFX elevatorMotor2;
+  private TalonFX algaeIntakeMotor;
   
   public Elevator() {
     numRotations = 0;
     elevatorHeight = 0;
+    targetHeight = 0;
+    targetRotations = 0;
+    elevatorMotor1 = new TalonFX(MOTOR1ID, "Team 3045");
+    elevatorMotor2 = new TalonFX(MOTOR2ID, "Team 3045");
+    algaeIntakeMotor = new TalonFX(ALGAEINTAKEMOTOR, "Team 3045");
   }
 
   private double calcHeightFromRotations(double pinnionRotations) {
     return pinnionRotations * PINNIONTODRUMRATIO * DRUMROTATIONTODISTANCE;
   }
 
+  private double calcRotationsFromHeight(double height) {
+    return height * (1/PINNIONTODRUMRATIO) * (1/DRUMROTATIONTODISTANCE);
+  }
+
+  public boolean atTargetHeight() {
+    return Math.abs(elevatorHeight - targetHeight) <= HEIGHTTOLLERANCE;
+  }
+
+  public void goToHeight(double TargetHeight) {
+    targetHeight = TargetHeight;
+  }
+
   @Override
   public void periodic() {
     numRotations = elevatorMotor1.getRotorPosition().getValueAsDouble();
     elevatorHeight = calcHeightFromRotations(numRotations);
-    // This method will be called once per scheduler run
+    targetRotations = calcRotationsFromHeight(targetHeight);
+    double rotDiff = numRotations - targetRotations;
+    double speed = rotDiff/SPEEDDOWN;
+    if (rotDiff > 0.2) {
+      elevatorMotor1.set(speed);
+      elevatorMotor2.set(speed);
+    } else {
+      elevatorMotor1.set(HOLDSPEED);
+      elevatorMotor2.set(HOLDSPEED);
+    }
+    if (elevatorHeight < LOWERCLEARENCEBOUND && elevatorHeight > UPPERCLEARENCEBOUND) {
+      algaeIntakeMotor.set(ALGAEINTAKESPEED);
+    } else {
+      if (Math.abs(algaeIntakeMotor.getTorqueCurrent().getValueAsDouble()) < 30 || Math.abs(algaeIntakeMotor.getVelocity().getValueAsDouble()) > 1) {
+        algaeIntakeMotor.set(-ALGAEINTAKESPEED);
+      } else {
+        algaeIntakeMotor.set(ALGAEHOLDSPEED);
+      }
+    }
   }
 }
