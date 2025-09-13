@@ -8,15 +8,15 @@ package frc.robot.Constants;
 public class ElevatorConstants {
     public static int MOTOR1ID = 18;
     public static int MOTOR2ID = 32;
-    public static int ALGAEINTAKEMOTOR = 20;
+    public static int ALGAEINTAKEMOTOR = 15;
 
     public static double PINNIONTODRUMRATIO = 12/36; //Ratio between pinnions and drum
     public static double DRUMROTATIONTODISTANCE = 0.05334; //What one rotation is for the drum to distance
     public static double HEIGHTTOLLERANCE = 0.1;
     public static double SPEEDDOWN = 4;
-    public static double HOLDSPEED = 0.05;
+    public static double HOLDSPEED = 0;
     public static double UPPERCLEARENCEBOUND = 1;
     public static double LOWERCLEARENCEBOUND = 0;
     public static double ALGAEINTAKESPEED = 0.2;
-    public static double ALGAEHOLDSPEED = 0.1;
+    public static double ALGAEHOLDSPEED = 0.0;
 }

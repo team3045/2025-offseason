@@ -65,10 +65,10 @@ public class Elevator extends SubsystemBase {
     if (elevatorHeight < LOWERCLEARENCEBOUND && elevatorHeight > UPPERCLEARENCEBOUND) {
       algaeIntakeMotor.set(ALGAEINTAKESPEED);
     } else {
-      if (Math.abs(algaeIntakeMotor.getTorqueCurrent().getValueAsDouble()) < 30 || Math.abs(algaeIntakeMotor.getVelocity().getValueAsDouble()) > 1) {
-        algaeIntakeMotor.set(-ALGAEINTAKESPEED);
-      } else {
+      if (Math.abs(algaeIntakeMotor.getTorqueCurrent().getValueAsDouble()) > 30 || Math.abs(algaeIntakeMotor.getVelocity().getValueAsDouble()) < 12) {
         algaeIntakeMotor.set(ALGAEHOLDSPEED);
+      } else {
+        algaeIntakeMotor.set(-ALGAEINTAKESPEED);
       }
     }
   }

@@ -26,6 +26,7 @@ import frc.robot.Helpers.HandlerState;
 import frc.robot.RobotState.DriveState;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
+import frc.robot.Subsystems.Elevator;
 import frc.robot.commons.GremlinLogger;
 import frc.robot.commons.GremlinPS4Controller;
 
@@ -52,14 +53,13 @@ public class RobotContainer {
   // public final static ElevatorPivot elevatorPivot = new ElevatorPivot();
   // public final static Claw claw = new Claw();
   public final static CoralHandler intake = new CoralHandler();
+  // public final static Elevator elevator = new Elevator();
 
   public static Pose3d[] componentPoses = new Pose3d[8];
 
 
   public final Trigger intakeState = new Trigger(() -> M_ROBOT_STATE.getDriveState() == DriveState.INTAKE);
   public final Trigger teleopState = new Trigger(() -> M_ROBOT_STATE.getDriveState() == DriveState.TELEOP);
-
-  private final AutoScoreCoralFactory autoScoreCoralFactory = new AutoScoreCoralFactory();
 
   public RobotContainer() {
     GremlinLogger.setOptions(new DogLogOptions()
@@ -77,6 +77,8 @@ public class RobotContainer {
     
     joystick.R1().onTrue(intake.runOnce(() -> intake.intake()));
     joystick.R2().onTrue(intake.runOnce(() -> intake.outtake()));
+    // joystick.L1().onTrue(elevator.runOnce(() -> elevator.goToHeight(0)));
+    // joystick.L2().onTrue(elevator.runOnce(() -> elevator.goToHeight(2)));
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -85,10 +87,6 @@ public class RobotContainer {
               .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
               .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
-    );
-
-    joystick.L2().onTrue(
-      autoScoreCoralFactory.fullAutoscore()
     );
   }
 
