@@ -9,13 +9,11 @@ public class CoralIntakeConstants {
     public static int ROLLERID = 14;
     public static int PIVOTID = 13;
     public static int INDEXERID = 33;
-    public static int EFFECTORID = 30;
     public static int CANRANGEID = 37;
 
     public static double ROLLERSPEED = -1;
     public static double PIVOTSPEED = 0.1;
     public static double INDEXERSPEED = 1;
-    public static double EFFECTORSPEED = 1;
 
     //Angle difference between stowed and intaking
     public static double ANGLEDIFF = 0;

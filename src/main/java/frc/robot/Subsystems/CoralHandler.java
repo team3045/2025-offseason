@@ -24,20 +24,20 @@ public class CoralHandler extends SubsystemBase {
   private TalonFX roller;
   private TalonFX pivot;
   private TalonFX indexer;
-  private TalonFX effector;
   private CANrange canRange;
   private Supplier<Distance> rangeSupplier;
   private HandlerState prevState;
+  private EndEffector effector;
 
   private double timeStarted;
   private double time;
 
-  public CoralHandler() {
+  public CoralHandler(EndEffector Effector) {
     roller = new TalonFX(ROLLERID, "Team 3045");
     pivot = new TalonFX(PIVOTID, "Team 3045");
     indexer = new TalonFX(INDEXERID, "Team 3045");
-    effector = new TalonFX(EFFECTORID, "Team 3045");
     canRange = new CANrange(CANRANGEID, "Team 3045");
+    effector = Effector;
     rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
@@ -82,7 +82,8 @@ public class CoralHandler extends SubsystemBase {
       case INTAKING:
         roller.set(ROLLERSPEED);
         indexer.set(INDEXERSPEED);
-        effector.set(EFFECTORSPEED);
+        effector.setRunning(true);
+        effector.setDir(1);
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
         }
@@ -93,7 +94,8 @@ public class CoralHandler extends SubsystemBase {
       case OUTTAKING:
         roller.set(-ROLLERSPEED);
         indexer.set(-INDEXERSPEED);
-        effector.set(-EFFECTORSPEED);
+        effector.setRunning(true);
+        effector.setDir(-1);
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
         }
@@ -101,12 +103,12 @@ public class CoralHandler extends SubsystemBase {
       case STOWED:
         roller.set(0);
         indexer.set(0);
-        effector.set(0);
+        effector.setRunning(false);
         break;
       case IDLE:
         roller.set(0);
         indexer.set(0);
-        effector.set(0);
+        effector.setRunning(false);
         prevState = HandlerState.STOWED;
         state = HandlerState.MOVINGUP;
         break;

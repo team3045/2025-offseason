@@ -27,6 +27,7 @@ import frc.robot.RobotState.DriveState;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
 import frc.robot.Subsystems.Elevator;
+import frc.robot.Subsystems.EndEffector;
 import frc.robot.commons.GremlinLogger;
 import frc.robot.commons.GremlinPS4Controller;
 
@@ -50,10 +51,9 @@ public class RobotContainer {
   // public final Intake intake = new Intake();
 
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-  // public final static ElevatorPivot elevatorPivot = new ElevatorPivot();
-  // public final static Claw claw = new Claw();
-  public final static CoralHandler intake = new CoralHandler();
   public final static Elevator elevator = new Elevator();
+  public final static EndEffector effector = new EndEffector();
+  public final static CoralHandler intake = new CoralHandler(effector);
 
   public static Pose3d[] componentPoses = new Pose3d[8];
 
