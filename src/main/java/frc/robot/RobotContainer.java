@@ -53,7 +53,7 @@ public class RobotContainer {
   // public final static ElevatorPivot elevatorPivot = new ElevatorPivot();
   // public final static Claw claw = new Claw();
   public final static CoralHandler intake = new CoralHandler();
-  // public final static Elevator elevator = new Elevator();
+  public final static Elevator elevator = new Elevator();
 
   public static Pose3d[] componentPoses = new Pose3d[8];
 
@@ -77,8 +77,9 @@ public class RobotContainer {
     
     joystick.R1().onTrue(intake.runOnce(() -> intake.intake()));
     joystick.R2().onTrue(intake.runOnce(() -> intake.outtake()));
-    // joystick.L1().onTrue(elevator.runOnce(() -> elevator.goToHeight(0)));
-    // joystick.L2().onTrue(elevator.runOnce(() -> elevator.goToHeight(2)));
+    joystick.L1().onTrue(elevator.runOnce(() -> elevator.goToHeight(0)));
+    joystick.L2().onTrue(elevator.runOnce(() -> elevator.goToHeight(2)));
+    joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

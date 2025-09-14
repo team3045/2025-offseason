@@ -5,6 +5,7 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ElevatorConstants.*;
@@ -55,7 +56,11 @@ public class Elevator extends SubsystemBase {
     targetRotations = calcRotationsFromHeight(targetHeight);
     double rotDiff = numRotations - targetRotations;
     double speed = rotDiff/SPEEDDOWN;
-    if (rotDiff > 0.2) {
+    SmartDashboard.putNumber("RotDiff", rotDiff);
+    SmartDashboard.putNumber("Speed", speed);
+    SmartDashboard.putNumber("TargetRot", targetRotations);
+    SmartDashboard.putNumber("CurrRot", numRotations);
+    if (Math.abs(rotDiff) > 0.2) {
       elevatorMotor1.set(speed);
       elevatorMotor2.set(speed);
     } else {
