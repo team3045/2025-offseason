@@ -42,6 +42,10 @@ public class EndEffector extends SubsystemBase {
     targetRot = targetAngle;
   }
 
+  public boolean atTargetAngle() {
+    return Math.abs(targetRot - currRot) < ANGLETOLERANCE;
+  }
+
   public void setRunning(boolean state) {
     isEffectorRunning = state;
   }

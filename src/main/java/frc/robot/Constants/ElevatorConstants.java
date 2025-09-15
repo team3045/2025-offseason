@@ -19,4 +19,6 @@ public class ElevatorConstants {
     public static double LOWERCLEARENCEBOUND = 0;
     public static double ALGAEINTAKESPEED = 0.2;
     public static double ALGAEHOLDSPEED = 0.0;
+    public static double CORALINTAKEHEIGHT = 0.1;
+    public static double ALGAEINTAKEHEIGHT = 0.5;
 }
