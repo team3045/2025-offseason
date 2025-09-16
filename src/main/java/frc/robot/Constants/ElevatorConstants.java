@@ -11,8 +11,8 @@ public class ElevatorConstants {
     public static int ALGAEINTAKEMOTOR = 15;
 
     public static double PINNIONTODRUMRATIO = 0.33333; //Ratio between pinnions and drum
-    public static double DRUMROTATIONTODISTANCE = 0.01134; //What one rotation is for the drum to distance
-    public static double HEIGHTTOLLERANCE = 0.1;
+    public static double DRUMROTATIONTODISTANCE = 0.165; //What one rotation is for the drum to distance
+    public static double HEIGHTTOLLERANCE = 0.05;
     public static double SPEEDDOWN = -32;
     public static double HOLDSPEED = 0;
     public static double UPPERCLEARENCEBOUND = 1;

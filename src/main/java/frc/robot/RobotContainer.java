@@ -13,6 +13,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,7 +79,7 @@ public class RobotContainer {
     joystick.R1().onTrue(intake.runOnce(() -> intake.intake()));
     joystick.R2().onTrue(intake.runOnce(() -> intake.outtake()));
     joystick.L1().onTrue(elevator.runOnce(() -> elevator.goToHeight(0)));
-    joystick.L2().onTrue(elevator.runOnce(() -> elevator.goToHeight(0.5)));
+    joystick.L2().onTrue(elevator.runOnce(() -> elevator.goToHeight(Units.feetToMeters(2))));
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     drivetrain.setDefaultCommand(
