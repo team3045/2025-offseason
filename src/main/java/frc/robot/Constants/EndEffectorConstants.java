@@ -3,10 +3,10 @@ package frc.robot.Constants;
 import edu.wpi.first.math.util.Units;
 
 public class EndEffectorConstants {
-    public static int EFFECTORTILTERID = 40;
+    public static int EFFECTORTILTERID = 21;
     public static int EFFECTORID = 30;
-    public static int ENCODERBOTTOMID = 41;
-    public static int ENCODERTOPID = 42;
+    public static int ENCODERBOTTOMID = 31;
+    public static int ENCODERTOPID = 32;
     public static double ENCODERROTDIFFPERFULLROT = 0.01;
     public static double STOWROT = 0;
     public static double PIVOTGEARING = 0.0146484375;

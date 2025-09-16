@@ -18,6 +18,7 @@ public class Elevator extends SubsystemBase {
   private double numRotations;
   private double targetHeight;
   private double targetRotations;
+  private double motorZero;
 
   private TalonFX elevatorMotor1;
   private TalonFX elevatorMotor2;
@@ -31,6 +32,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor1 = new TalonFX(MOTOR1ID, "Team 3045");
     elevatorMotor2 = new TalonFX(MOTOR2ID, "Team 3045");
     algaeIntakeMotor = new TalonFX(ALGAEINTAKEMOTOR, "Team 3045");
+    motorZero = elevatorMotor1.getRotorPosition().getValueAsDouble();
   }
 
   private double calcHeightFromRotations(double pinnionRotations) {
@@ -53,7 +55,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     numRotations = elevatorMotor1.getRotorPosition().getValueAsDouble();
     elevatorHeight = calcHeightFromRotations(numRotations);
-    targetRotations = calcRotationsFromHeight(targetHeight);
+    targetRotations = calcRotationsFromHeight(targetHeight) + motorZero;
     double rotDiff = numRotations - targetRotations;
     double speed = rotDiff/SPEEDDOWN;
     SmartDashboard.putNumber("RotDiff", rotDiff);
@@ -61,8 +63,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("TargetRot", targetRotations);
     SmartDashboard.putNumber("CurrRot", numRotations);
     if (Math.abs(rotDiff) > 0.2) {
-      elevatorMotor1.set(speed);
-      elevatorMotor2.set(speed);
+      elevatorMotor1.set(Math.min(speed, 0.5));
+      elevatorMotor2.set(Math.min(speed, 0.5));
     } else {
       elevatorMotor1.set(HOLDSPEED);
       elevatorMotor2.set(HOLDSPEED);
