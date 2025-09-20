@@ -78,8 +78,11 @@ public class RobotContainer {
     
     joystick.R1().onTrue(intake.runOnce(() -> intake.intake()));
     joystick.R2().onTrue(intake.runOnce(() -> intake.outtake()));
+    joystick.options().onTrue(intake.runOnce(() -> intake.stow()));
     joystick.L1().onTrue(elevator.runOnce(() -> elevator.goToHeight(0)));
     joystick.L2().onTrue(elevator.runOnce(() -> elevator.goToHeight(Units.feetToMeters(2))));
+    joystick.L3().onTrue(effector.runOnce(() -> effector.goToRot(0)));
+    joystick.R3().onTrue(effector.runOnce(() -> effector.goToRot(0.4)));
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     drivetrain.setDefaultCommand(

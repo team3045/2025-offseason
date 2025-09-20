@@ -58,10 +58,10 @@ public class Elevator extends SubsystemBase {
     targetRotations = calcRotationsFromHeight(targetHeight) + motorZero;
     double rotDiff = numRotations - targetRotations;
     double speed = rotDiff/SPEEDDOWN;
-    SmartDashboard.putNumber("RotDiff", rotDiff);
-    SmartDashboard.putNumber("Speed", speed);
-    SmartDashboard.putNumber("TargetRot", targetRotations);
-    SmartDashboard.putNumber("CurrRot", numRotations);
+    SmartDashboard.putNumber("Elevator/RotDiff", rotDiff);
+    SmartDashboard.putNumber("Elevator/Speed", speed);
+    SmartDashboard.putNumber("Elevator/TargetRot", targetRotations);
+    SmartDashboard.putNumber("Elevator/CurrRot", numRotations);
     if (Math.abs(rotDiff) > 0.2) {
       elevatorMotor1.set(Math.min(speed, 0.5));
       elevatorMotor2.set(Math.min(speed, 0.5));

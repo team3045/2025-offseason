@@ -4,9 +4,11 @@
 
 package frc.robot.Subsystems;
 
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SoftLimitConfig;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,6 +30,7 @@ public class CoralHandler extends SubsystemBase {
   private Supplier<Distance> rangeSupplier;
   private HandlerState prevState;
   private EndEffector effector;
+  private SoftwareLimitSwitchConfigs config;
 
   private double timeStarted;
   private double time;
@@ -37,6 +40,10 @@ public class CoralHandler extends SubsystemBase {
     pivot = new TalonFX(PIVOTID, "Team 3045");
     indexer = new TalonFX(INDEXERID, "Team 3045");
     canRange = new CANrange(CANRANGEID, "Team 3045");
+    config = new SoftwareLimitSwitchConfigs();
+    config.ForwardSoftLimitEnable = false;
+    config.ReverseSoftLimitEnable = false;
+    pivot.getConfigurator().apply(config);
     effector = Effector;
     rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
@@ -55,26 +62,29 @@ public class CoralHandler extends SubsystemBase {
     state = HandlerState.MOVINGDOWN;
   }
 
+  public void stow() {
+    timeStarted = Timer.getTimestamp();
+    prevState = HandlerState.STOWED;
+    state = HandlerState.MOVINGUP;
+  }
+
   @Override
   public void periodic() {
     time = Timer.getTimestamp();
-    SmartDashboard.putNumber("Range", rangeSupplier.get().baseUnitMagnitude());
-    SmartDashboard.putNumber("PivotCurrent", Math.abs(pivot.getTorqueCurrent().getValueAsDouble()));
-    SmartDashboard.putNumber("PivotVelocity", Math.abs(pivot.getVelocity().getValueAsDouble()));
-    SmartDashboard.putString("IntakeState", state.toString());
+    SmartDashboard.putString("CoralHandler/IntakeState", state.toString());
     // This method will be called once per scheduler run
     pivot.setNeutralMode(NeutralModeValue.Brake);
     switch (state) {
       case MOVINGDOWN:
         pivot.set(-PIVOTSPEED);
-        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 50 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 40 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 0.1) {
           state = prevState;
           pivot.set(0.03);
         }
         break;
       case MOVINGUP:
         pivot.set(PIVOTSPEED);
-        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 50 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 40 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 0.1) {
           state = prevState;
           pivot.set(0.03);
         }
