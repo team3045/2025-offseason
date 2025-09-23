@@ -25,6 +25,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.Factories.AutoScoreCoralFactory;
 import frc.robot.Helpers.HandlerState;
 import frc.robot.RobotState.DriveState;
+import frc.robot.Subsystems.AlgaeIntake;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
 import frc.robot.Subsystems.Elevator;
@@ -52,10 +53,11 @@ public class RobotContainer {
   // public final Intake intake = new Intake();
 
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-  public final static Elevator elevator = new Elevator();
   public final static EndEffector effector = new EndEffector();
+  public final static AlgaeIntake algaeintake = new AlgaeIntake(effector);
   public final static CoralHandler intake = new CoralHandler(effector);
-
+  public final static Elevator elevator = new Elevator(algaeintake);
+  
   public static Pose3d[] componentPoses = new Pose3d[8];
 
 

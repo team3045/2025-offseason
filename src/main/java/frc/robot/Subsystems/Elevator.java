@@ -22,16 +22,16 @@ public class Elevator extends SubsystemBase {
 
   private TalonFX elevatorMotor1;
   private TalonFX elevatorMotor2;
-  private TalonFX algaeIntakeMotor;
+  private AlgaeIntake algaeIntake;
   
-  public Elevator() {
+  public Elevator(AlgaeIntake AlgaeIntake) {
     numRotations = 0;
     elevatorHeight = 0;
     targetHeight = 0;
     targetRotations = 0;
     elevatorMotor1 = new TalonFX(MOTOR1ID, "Team 3045");
     elevatorMotor2 = new TalonFX(MOTOR2ID, "Team 3045");
-    algaeIntakeMotor = new TalonFX(ALGAEINTAKEMOTOR, "Team 3045");
+    algaeIntake = AlgaeIntake;
     motorZero = elevatorMotor1.getRotorPosition().getValueAsDouble();
   }
 
@@ -70,13 +70,9 @@ public class Elevator extends SubsystemBase {
       elevatorMotor2.set(HOLDSPEED);
     }
     if (elevatorHeight < LOWERCLEARENCEBOUND && elevatorHeight > UPPERCLEARENCEBOUND) {
-      algaeIntakeMotor.set(ALGAEINTAKESPEED);
+      algaeIntake.moveDown();
     } else {
-      if (Math.abs(algaeIntakeMotor.getTorqueCurrent().getValueAsDouble()) > 30 || Math.abs(algaeIntakeMotor.getVelocity().getValueAsDouble()) < 12) {
-        algaeIntakeMotor.set(ALGAEHOLDSPEED);
-      } else {
-        algaeIntakeMotor.set(-ALGAEINTAKESPEED);
-      }
+      algaeIntake.moveUp();
     }
   }
 }

@@ -53,6 +53,18 @@ public class AlgaeIntake extends SubsystemBase {
     state = HandlerState.MOVINGDOWN;
   }
 
+  public void moveDown() {
+    timeStarted = Timer.getTimestamp();
+    prevState = HandlerState.IDLE;
+    state = HandlerState.MOVINGDOWN;
+  }
+
+  public void moveUp() {
+    timeStarted = Timer.getTimestamp();
+    prevState = HandlerState.IDLE;
+    state = HandlerState.MOVINGUP;
+  }
+
   @Override
   public void periodic() {
     time = Timer.getTimestamp();
@@ -65,14 +77,14 @@ public class AlgaeIntake extends SubsystemBase {
     switch (state) {
       case MOVINGDOWN:
         pivot.set(-PIVOTSPEED);
-        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 50 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
           state = prevState;
           pivot.set(0.03);
         }
         break;
       case MOVINGUP:
         pivot.set(PIVOTSPEED);
-        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 50 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
           state = prevState;
           pivot.set(0.03);
         }
