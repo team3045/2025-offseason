@@ -1,9 +1,6 @@
 package frc.robot.vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.VecBuilder;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
@@ -11,33 +8,25 @@ import frc.robot.Subsystems.CommandSwerveDrivetrain;
 public class LimelightCamera {
     private static CommandSwerveDrivetrain drivetrain = RobotContainer.drivetrain;
     private String cameraName;
-    private Pose3d relRobotPose;
 
-    public LimelightCamera(String CameraName, int cameraSettingsIndex) {
-        cameraName = CameraName;
+    public LimelightCamera(int cameraSettingsIndex) {
+        cameraName = VisionConstants.cameraNames[cameraSettingsIndex];
         LimelightHelpers.setCameraPose_RobotSpace(
-            CameraName,
-            relRobotPose.getZ(),
-            relRobotPose.getX(),
-            relRobotPose.getY(),
-            relRobotPose.getRotation().getZ(),
-            relRobotPose.getRotation().getY(),
-            relRobotPose.getRotation().getX()
+            VisionConstants.cameraNames[cameraSettingsIndex],
+            VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getZ(),
+            VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getX(),
+            VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getY(),
+            VisionConstants.cameraPoses[cameraSettingsIndex].getRotation().getZ(),
+            VisionConstants.cameraPoses[cameraSettingsIndex].getRotation().getY(),
+            VisionConstants.cameraPoses[cameraSettingsIndex].getRotation().getX()
         );
     }
 
     public void gather() {
         LimelightHelpers.PoseEstimate poseEstimate;
-        if (DriverStation.getAlliance().isPresent()) {
-            if (DriverStation.getAlliance().get() == Alliance.Blue) {
-                poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraName);
-            } else {
-                poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiRed(cameraName);
-            }
-        } else {
-            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiRed(cameraName);
-        }
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraName);
 
-        drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+        //We dont use vision for orientation
+        drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds, VecBuilder.fill(0.1, 0.1, 99999));
     }
 }

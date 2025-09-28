@@ -77,7 +77,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
     joystick.R1().onTrue(intake.Intake());
     joystick.R2().onTrue(intake.Outtake());
     joystick.options().onTrue(intake.Stow());
