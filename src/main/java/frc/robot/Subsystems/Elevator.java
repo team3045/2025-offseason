@@ -51,6 +51,11 @@ public class Elevator extends SubsystemBase {
     targetHeight = TargetHeight;
   }
 
+  //Target height is in meters
+  public Command goToHeight(double targetHeight) {
+    return this.runOnce(() -> goToHeight(targetHeight));
+  }
+
   @Override
   public void periodic() {
     numRotations = elevatorMotor1.getRotorPosition().getValueAsDouble();

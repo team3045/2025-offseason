@@ -65,6 +65,22 @@ public class AlgaeIntake extends SubsystemBase {
     state = HandlerState.MOVINGUP;
   }
 
+  public Command intake() {
+    return this.runOnce(() -> intake());
+  }
+
+  public Command outtake() {
+    return this.runOnce(() -> outtake());
+  }
+
+  public Command moveDown() {
+    return this.runOnce(() -> moveDown());
+  }
+
+  public Command moveUp() {
+    return this.runOnce(() -> moveUp());
+  }
+
   @Override
   public void periodic() {
     time = Timer.getTimestamp();

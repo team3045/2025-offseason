@@ -44,6 +44,11 @@ public class EndEffector extends SubsystemBase {
     targetRot = TargetRot;
   }
 
+  //Rotations in -1 - 1; 1/-1 is top, 0 is bottom
+  public Command goToRot(double targetRot) {
+    return this.runOnce(() -> goToRot(targetRot));
+  }
+
   public boolean atTargetAngle() {
     return Math.abs(targetRot - currRot) < ANGLETOLERANCE;
   }

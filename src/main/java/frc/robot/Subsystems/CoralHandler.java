@@ -68,6 +68,18 @@ public class CoralHandler extends SubsystemBase {
     state = HandlerState.MOVINGUP;
   }
 
+  public Command intake() {
+    return this.runOnce(() -> intake());
+  }
+
+  public Command outtake() {
+    return this.runOnce(() -> outtake());
+  }
+
+  public Command stow() {
+    return this.runOnce(() -> stow());
+  }
+
   @Override
   public void periodic() {
     time = Timer.getTimestamp();
