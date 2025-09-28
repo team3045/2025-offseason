@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SoftLimitConfig;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Helpers.HandlerState;
 
@@ -68,15 +69,15 @@ public class CoralHandler extends SubsystemBase {
     state = HandlerState.MOVINGUP;
   }
 
-  public Command intake() {
+  public Command Intake() {
     return this.runOnce(() -> intake());
   }
 
-  public Command outtake() {
+  public Command Outtake() {
     return this.runOnce(() -> outtake());
   }
 
-  public Command stow() {
+  public Command Stow() {
     return this.runOnce(() -> stow());
   }
 

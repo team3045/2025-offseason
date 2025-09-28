@@ -78,13 +78,13 @@ public class RobotContainer {
 
   private void configureBindings() {
     
-    joystick.R1().onTrue(intake.intake());
-    joystick.R2().onTrue(intake.outtake());
-    joystick.options().onTrue(intake.stow());
-    joystick.L1().onTrue(elevator.goToHeight(0));
-    joystick.L2().onTrue(elevator.goToHeight(Units.feetToMeters(2)));
-    joystick.L3().onTrue(effector.goToRot(0));
-    joystick.R3().onTrue(effector.goToRot(0.4));
+    joystick.R1().onTrue(intake.Intake());
+    joystick.R2().onTrue(intake.Outtake());
+    joystick.options().onTrue(intake.Stow());
+    joystick.L1().onTrue(elevator.GoToHeight(0));
+    joystick.L2().onTrue(elevator.GoToHeight(Units.feetToMeters(2)));
+    joystick.L3().onTrue(effector.GoToRot(0));
+    joystick.R3().onTrue(effector.GoToRot(0.4));
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     drivetrain.setDefaultCommand(

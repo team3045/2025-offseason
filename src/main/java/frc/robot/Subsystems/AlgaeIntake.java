@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Helpers.HandlerState;
 
@@ -65,19 +66,19 @@ public class AlgaeIntake extends SubsystemBase {
     state = HandlerState.MOVINGUP;
   }
 
-  public Command intake() {
+  public Command Intake() {
     return this.runOnce(() -> intake());
   }
 
-  public Command outtake() {
+  public Command Outtake() {
     return this.runOnce(() -> outtake());
   }
 
-  public Command moveDown() {
+  public Command MoveDown() {
     return this.runOnce(() -> moveDown());
   }
 
-  public Command moveUp() {
+  public Command MoveUp() {
     return this.runOnce(() -> moveUp());
   }
 
