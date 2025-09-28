@@ -76,6 +76,6 @@ public class AutoScoreAlgaeFactory {
     }
 
     public Command fullBarge() {
-        return goToBargePose().alongWith(elevator.GoToHeight(BARGEELEVATORHEIGHT).andThen(effector.GoToAngleDegrees(BARGEENDEFFECTORANGLE)).andThen(drivetrain.DriveBack()).andThen(effector.Outtake()).andThen(drivetrain.DriveFoward())).alongWith(effector.Stow()).andThen(elevator.Stow());
+        return elevator.GoToHeight(BARGEELEVATORHEIGHT).andThen(effector.GoToAngleDegrees(BARGEENDEFFECTORANGLE)).andThen(drivetrain.DriveBack()).andThen(effector.Outtake()).andThen(drivetrain.DriveFoward()).alongWith(effector.Stow()).andThen(elevator.Stow());
     }
 }
