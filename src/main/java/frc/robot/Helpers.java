@@ -9,4 +9,8 @@ public class Helpers {
         MOVINGDOWN,
         MOVINGUP
     }
+
+    public static int clamp(int val, int lower, int higher) {
+        return Math.max(Math.min(val, higher), lower);
+    }
 }

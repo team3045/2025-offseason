@@ -27,8 +27,6 @@ public class CoralHandler extends SubsystemBase {
   private TalonFX roller;
   private TalonFX pivot;
   private TalonFX indexer;
-  private CANrange canRange;
-  private Supplier<Distance> rangeSupplier;
   private HandlerState prevState;
   private EndEffector effector;
   private SoftwareLimitSwitchConfigs config;
@@ -40,13 +38,11 @@ public class CoralHandler extends SubsystemBase {
     roller = new TalonFX(ROLLERID, "Team 3045");
     pivot = new TalonFX(PIVOTID, "Team 3045");
     indexer = new TalonFX(INDEXERID, "Team 3045");
-    canRange = new CANrange(CANRANGEID, "Team 3045");
     config = new SoftwareLimitSwitchConfigs();
     config.ForwardSoftLimitEnable = false;
     config.ReverseSoftLimitEnable = false;
     pivot.getConfigurator().apply(config);
     effector = Effector;
-    rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
   }
@@ -110,7 +106,7 @@ public class CoralHandler extends SubsystemBase {
         if ((time - timeStarted) >= INTAKELENGTHSECONDS) {
           state = HandlerState.IDLE;
         }
-        if (rangeSupplier.get().baseUnitMagnitude() <= DEFAULTCANRANGEDIST) {
+        if (effector.HasCoral().getAsBoolean()) {
           state = HandlerState.IDLE;
         }
         break;

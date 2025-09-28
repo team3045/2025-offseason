@@ -10,26 +10,24 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
+import frc.robot.vision.VisionConstants;
 import frc.robot.Factories.AutoScoreCoralFactory;
-import frc.robot.Helpers.HandlerState;
 import frc.robot.RobotState.DriveState;
 import frc.robot.Subsystems.AlgaeIntake;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.EndEffector;
+import frc.robot.Subsystems.Vision;
 import frc.robot.commons.GremlinLogger;
 import frc.robot.commons.GremlinPS4Controller;
 
@@ -57,6 +55,8 @@ public class RobotContainer {
   public final static AlgaeIntake algaeintake = new AlgaeIntake(effector);
   public final static CoralHandler intake = new CoralHandler(effector);
   public final static Elevator elevator = new Elevator(algaeintake);
+  public final static Vision vision = new Vision(VisionConstants.cameraIndeces);
+  public final static AutoScoreCoralFactory scoreFactory = new AutoScoreCoralFactory();
   
   public static Pose3d[] componentPoses = new Pose3d[8];
 
@@ -79,7 +79,6 @@ public class RobotContainer {
   private void configureBindings() {
     joystick.R1().onTrue(intake.Intake());
     joystick.R2().onTrue(intake.Outtake());
-    joystick.options().onTrue(intake.Stow());
     joystick.L1().onTrue(elevator.GoToHeight(0));
     joystick.L2().onTrue(elevator.GoToHeight(Units.feetToMeters(2)));
     joystick.L3().onTrue(effector.GoToRot(0));

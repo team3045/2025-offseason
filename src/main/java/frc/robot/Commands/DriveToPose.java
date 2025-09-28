@@ -1,80 +1,160 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.Commands;
 
+import static frc.robot.Constants.DriveConstants.ROTATION_CONSTRAINTS;
+import static frc.robot.Constants.DriveConstants.TRANSLATION_CONSTRAINTS;
+
+import java.util.function.Supplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.FlippingUtil;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 
-import static frc.robot.Constants.DriveConstants.*;
-
+/**
+ * Command to drive to a pose.
+ */
 public class DriveToPose extends Command {
-  private final ProfiledPIDController translationXController = new ProfiledPIDController(TRANSLATION_KP, TRANSLATION_KI, TRANSLATION_KD, TRANSLATION_CONSTRAINTS);
-  private final ProfiledPIDController translationYController = new ProfiledPIDController(TRANSLATION_KP, TRANSLATION_KI, TRANSLATION_KD, TRANSLATION_CONSTRAINTS);
-  private final ProfiledPIDController rotationController = new ProfiledPIDController(ROTATION_KP, ROTATION_KI, ROTATION_KD, ROTATION_CONSTRAINTS);
-  private CommandSwerveDrivetrain drivetrain;
-  private Pose2d targetPose;
-  /** Creates a new DriveToPose command. */
-  public DriveToPose(CommandSwerveDrivetrain Drivetrain, Pose2d TargetPose) {
-    drivetrain = Drivetrain;
-    targetPose = TargetPose;
+  private final PIDController xController;
+  private final PIDController yController;
+  private final ProfiledPIDController thetaController;
+
+  private final CommandSwerveDrivetrain drivetrainSubsystem;
+  private final Supplier<Pose2d> poseProvider;
+  private final Supplier<Pose2d> goalPoseSupplier;
+
+  private Pose2d goalPose;
+
+  public static final StructPublisher<Pose2d> targetPosePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("DriveState/targetPose", Pose2d.struct).publish();
+
+  public DriveToPose(
+      CommandSwerveDrivetrain drivetrainSubsystem,
+      Supplier<Pose2d> poseProvider,
+      Supplier<Pose2d> goalPoseSup) {
+    this(drivetrainSubsystem, poseProvider, goalPoseSup, TRANSLATION_CONSTRAINTS, ROTATION_CONSTRAINTS);
   }
 
-  private Pose2d getCurrPose() {
-    return drivetrain.getState().Pose;
+  public DriveToPose(
+      CommandSwerveDrivetrain drivetrainSubsystem,
+      Supplier<Pose2d> poseProvider,
+      Supplier<Pose2d> goalPoseSup,
+      TrapezoidProfile.Constraints xyConstraints,
+      TrapezoidProfile.Constraints omegaConstraints) {
+    this.drivetrainSubsystem = drivetrainSubsystem;
+    this.poseProvider = poseProvider;
+    this.goalPoseSupplier = goalPoseSup;
+
+    xController = new PIDController(DriveConstants.TRANSLATION_KP, DriveConstants.TRANSLATION_KI,
+        DriveConstants.TRANSLATION_KD);
+    yController = new PIDController(DriveConstants.TRANSLATION_KP, DriveConstants.TRANSLATION_KI,
+        DriveConstants.TRANSLATION_KI);
+    xController.setTolerance(DriveConstants.TRANLSATION_TOLLERANCE);
+    yController.setTolerance(DriveConstants.TRANLSATION_TOLLERANCE);
+    thetaController = new ProfiledPIDController(DriveConstants.ROTATION_KP, DriveConstants.ROTATION_KI,
+        DriveConstants.ROTATION_KD, omegaConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.setTolerance(Units.degreesToRadians(DriveConstants.ROTATION_TOLLERANCE));
+
+    resetPIDControllers();
+    
+    if(goalPoseSupplier.get() == null){
+      try {
+        throw new Exception("How the hell is this null");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      goalPose = AutoBuilder.shouldFlip() ? FlippingUtil.flipFieldPose(goalPoseSupplier.get()) : goalPoseSupplier.get();
+    }
+
+    addRequirements(this.drivetrainSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    translationXController.setGoal(targetPose.getX());
-    translationXController.setTolerance(0.1, 0.1);
-    translationYController.setGoal(targetPose.getY());
-    translationYController.setTolerance(0.1, 0.1);
-    rotationController.reset(getCurrPose().getRotation().getRadians());
-    rotationController.setGoal(targetPose.getRotation().getRadians());
-    rotationController.setTolerance(0.1, 0.1);
-    rotationController.disableContinuousInput();
+    resetPIDControllers();
+    
+    if(goalPoseSupplier.get() == null){
+      try {
+        throw new Exception("How the hell is this null");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      goalPose = AutoBuilder.shouldFlip() ? FlippingUtil.flipFieldPose(goalPoseSupplier.get()) : goalPoseSupplier.get();
+    }
+
+    thetaController.setGoal(goalPose.getRotation().getRadians());
+    xController.setSetpoint(goalPose.getX());
+    yController.setSetpoint(goalPose.getY());
+
+    targetPosePublisher.set(goalPose);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  public boolean atGoal() {
+    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atGoal() 
+      && drivetrainSubsystem.getState().Speeds.vxMetersPerSecond < 0.1
+      && drivetrainSubsystem.getState().Speeds.vyMetersPerSecond < 0.1
+      && drivetrainSubsystem.getState().Speeds.omegaRadiansPerSecond < Units.degreesToRadians(5);
+  }
+
+  private void resetPIDControllers() {
+    var robotPose = poseProvider.get();
+    thetaController.reset(robotPose.getRotation().getRadians());
+  }
+
   @Override
   public void execute() {
-    Pose2d currentPose = getCurrPose();
+    if(goalPose == null){
+      initialize();
+    }
 
-    //Logging
-    SmartDashboard.putNumberArray("CurrentPose", new double[]{currentPose.getX(), currentPose.getY(), currentPose.getRotation().getRadians()});
-    SmartDashboard.putNumberArray("TargetPose", new double[]{targetPose.getX(), targetPose.getY(), targetPose.getRotation().getRadians()});
-    
-    // Drive the robot, the PID controllers don't mean shit without actually applying the speeds to the drivetrain
+    Pose2d robotPose = poseProvider.get();
+    // Drive to the goal
+    double xSpeed = xController.calculate(robotPose.getX());
+    if (xController.atSetpoint()) {
+      xSpeed = 0;
+    }
 
-    double xSpeed = translationXController.calculate(currentPose.getX());
-    double ySpeed = translationYController.calculate(currentPose.getY());
-    double rotationalSpeed = rotationController.calculate(currentPose.getRotation().getRadians());
+    double ySpeed = yController.calculate(robotPose.getY());
+    if (yController.atSetpoint()) {
+      ySpeed = 0;
+    }
 
-    SmartDashboard.putNumberArray("Attempted solve",
-      new Double[]{xSpeed, ySpeed, rotationalSpeed}
-    );
+    double omegaSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
+    if (thetaController.atGoal()) {
+      omegaSpeed = 0;
+    }
 
-    drivetrain.setControl(DriveConstants.APPLY_FIELD_SPEEDS.withSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotationalSpeed)));
+    drivetrainSubsystem.setControl(DriveConstants.APPLY_FIELD_SPEEDS
+        .withSpeeds(new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed)));
+      
+    SmartDashboard.putNumber("DriveState/X", xSpeed);
+    SmartDashboard.putNumber("DriveState/Y", ySpeed);
+    SmartDashboard.putNumber("DriveState/Theta", omegaSpeed);
+    SmartDashboard.putNumber("DriveState/GoalX", xController.getSetpoint());
+    SmartDashboard.putNumber("DriveState/GoalY", yController.getSetpoint());
+    SmartDashboard.putNumber("DriveState/GoalTheta", thetaController.getGoal().position);
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    // Cancel robot movement after command is done
-    drivetrain.setControl(DriveConstants.APPLY_FIELD_SPEEDS.withSpeeds(new ChassisSpeeds(0, 0, 0)));
-  }
-
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return translationXController.atSetpoint() && translationYController.atSetpoint() && rotationController.atSetpoint();
+    return atGoal();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    drivetrainSubsystem.setControl(DriveConstants.brake);
   }
 }

@@ -4,7 +4,6 @@
 
 package frc.robot.Subsystems;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,6 +54,10 @@ public class Elevator extends SubsystemBase {
   //Target height is in meters
   public Command GoToHeight(double targetHeight) {
     return this.runOnce(() -> goToHeight(targetHeight));
+  }
+
+  public Command Stow() {
+    return GoToHeight(0);
   }
 
   @Override

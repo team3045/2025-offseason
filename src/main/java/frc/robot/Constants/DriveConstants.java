@@ -17,10 +17,12 @@ public class DriveConstants {
     public static final double TRANSLATION_KP = 1;
     public static final double TRANSLATION_KI = 0;
     public static final double TRANSLATION_KD = 0;
+    public static final double TRANLSATION_TOLLERANCE = 0.1;
 
     public static final double ROTATION_KP = 1;
     public static final double ROTATION_KI = 0;
     public static final double ROTATION_KD = 0;
+    public static final double ROTATION_TOLLERANCE = 0.1;
 
     public static final double MAX_VELOCITY = 5;
     public static final double MAX_ACCELERATION = 2;
@@ -35,4 +37,8 @@ public class DriveConstants {
             .withDesaturateWheelSpeeds(true)
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)
             .withDriveRequestType(DriveRequestType.Velocity);
+    
+    public static final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    public static final SwerveRequest.RobotCentric driveBack = new SwerveRequest.RobotCentric()
+            .withVelocityX(MAX_VELOCITY * -0.2);
 }
