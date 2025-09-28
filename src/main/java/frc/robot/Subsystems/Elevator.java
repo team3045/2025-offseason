@@ -79,7 +79,7 @@ public class Elevator extends SubsystemBase {
       elevatorMotor2.set(HOLDSPEED);
     }
     if (elevatorHeight < LOWERCLEARENCEBOUND && elevatorHeight > UPPERCLEARENCEBOUND) {
-      algaeIntake.moveDown();
+      algaeIntake.clearWay();
     } else {
       algaeIntake.moveUp();
     }

@@ -52,7 +52,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void stow() {
-    goToRot(STOWROT);
+    goToRot(STOWANGLE);
   }
 
   public Command Stow() {

@@ -10,6 +10,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.IntegerSubscriber;
@@ -21,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.vision.VisionConstants;
 import frc.robot.Factories.AutoScoreCoralFactory;
-import frc.robot.RobotState.DriveState;
 import frc.robot.Subsystems.AlgaeIntake;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
@@ -42,11 +43,9 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  public static final RobotState M_ROBOT_STATE = RobotState.getRobotState();
-
   private final GremlinPS4Controller joystick = new GremlinPS4Controller(0);
   private final CommandGenericHID buttonBoard = new CommandGenericHID(1);
-  public static final IntegerSubscriber poleHeightSubscriber = NetworkTableInstance.getDefault().getTable("Scoring Location").getIntegerTopic("Row").subscribe(0);
+  public static int poleHeight;
   
   // public final Intake intake = new Intake();
 
@@ -60,9 +59,18 @@ public class RobotContainer {
   
   public static Pose3d[] componentPoses = new Pose3d[8];
 
+  public void ConfigButtonBoard() {
+    buttonBoard.button(1).onTrue(Commands.runOnce(() -> poleHeight = 3));
+    buttonBoard.button(2).onTrue(Commands.runOnce(() -> poleHeight = 2));
+    buttonBoard.button(3).onTrue(Commands.runOnce(() -> poleHeight = 1));
+    buttonBoard.button(7).onTrue(Commands.runOnce(() -> poleHeight = 3));
+    buttonBoard.button(8).onTrue(Commands.runOnce(() -> poleHeight = 2));
+    buttonBoard.button(9).onTrue(Commands.runOnce(() -> poleHeight = 1));
+  }
 
-  public final Trigger intakeState = new Trigger(() -> M_ROBOT_STATE.getDriveState() == DriveState.INTAKE);
-  public final Trigger teleopState = new Trigger(() -> M_ROBOT_STATE.getDriveState() == DriveState.TELEOP);
+  public Command IntakeCoral() {
+    return effector.Stow().andThen(elevator.Stow()).andThen(intake.Intake());
+  }
 
   public RobotContainer() {
     GremlinLogger.setOptions(new DogLogOptions()
@@ -77,13 +85,11 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    joystick.R1().onTrue(intake.Intake());
-    joystick.R2().onTrue(intake.Outtake());
-    joystick.L1().onTrue(elevator.GoToHeight(0));
-    joystick.L2().onTrue(elevator.GoToHeight(Units.feetToMeters(2)));
-    joystick.L3().onTrue(effector.GoToRot(0));
-    joystick.R3().onTrue(effector.GoToRot(0.4));
+    joystick.R2().onTrue(intake.Intake());
+    joystick.R3().onTrue(intake.Outtake());
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
+    joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

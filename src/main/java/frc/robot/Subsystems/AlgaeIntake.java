@@ -4,7 +4,7 @@
 
 package frc.robot.Subsystems;
 
-import static frc.robot.Constants.CoralIntakeConstants.*;
+import static frc.robot.Constants.AlgaeIntakeConstants.*;
 import static frc.robot.Constants.EndEffectorConstants.ALGAEINTAKEANGLE;
 
 import java.util.function.Supplier;
@@ -31,6 +31,8 @@ public class AlgaeIntake extends SubsystemBase {
   private CANrange canRange;
   private Supplier<Distance> rangeSupplier;
   private EndEffector effector;
+  private boolean isIntaking;
+  private double startRot;
 
   public AlgaeIntake(EndEffector Effector) {
     roller = new TalonFX(ROLLERID, "Team 3045");
@@ -40,12 +42,15 @@ public class AlgaeIntake extends SubsystemBase {
     rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
+    isIntaking = false;
+    startRot = 0;
   }
 
   public void intake() {
     timeStarted = Timer.getTimestamp();
     prevState = HandlerState.INTAKING;
     state = HandlerState.MOVINGDOWN;
+    isIntaking = true;
   }
 
   public void outtake() {
@@ -64,6 +69,14 @@ public class AlgaeIntake extends SubsystemBase {
     timeStarted = Timer.getTimestamp();
     prevState = HandlerState.IDLE;
     state = HandlerState.MOVINGUP;
+  }
+
+  public void clearWay() {
+    timeStarted = Timer.getTimestamp();
+    prevState = HandlerState.IDLE;
+    state = HandlerState.MOVINGUP;
+    isIntaking = false;
+    startRot = pivot.getRotorPosition().getValueAsDouble();
   }
 
   public Command Intake() {
@@ -94,16 +107,23 @@ public class AlgaeIntake extends SubsystemBase {
     switch (state) {
       case MOVINGDOWN:
         pivot.set(-PIVOTSPEED);
-        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
-          state = prevState;
-          pivot.set(0.03);
+        if (isIntaking) {
+          if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+            state = prevState;
+            pivot.set(0);
+          }
+        } else {
+          if (Math.abs(pivot.getRotorPosition().getValueAsDouble() - startRot) >= TOTALROTATIONSFORCOLLISION) {
+            state = prevState;
+            pivot.set(0);
+          }
         }
         break;
       case MOVINGUP:
         pivot.set(PIVOTSPEED);
         if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
           state = prevState;
-          pivot.set(0.03);
+          pivot.set(0);
         }
         break;
       case INTAKING:

@@ -1,7 +1,6 @@
 package frc.robot.Factories;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +17,6 @@ public class AutoScoreCoralFactory {
     private static CommandSwerveDrivetrain drivetrain = RobotContainer.drivetrain;
     private static Elevator elevator = RobotContainer.elevator;
     private static EndEffector effector = RobotContainer.effector;
-    private static IntegerSubscriber poleHeightSubscriber = RobotContainer.poleHeightSubscriber;
     public static boolean isRight = false;
 
     private Translation2d midpoint(Translation2d a, Translation2d b) {
@@ -60,11 +58,11 @@ public class AutoScoreCoralFactory {
     }
 
     public Command goToElevatorHeight() {
-        return elevator.GoToHeight(SCORE_HEIGHTS[Helpers.clamp((int) poleHeightSubscriber.get(), 0, 3)]);
+        return elevator.GoToHeight(SCORE_HEIGHTS[Helpers.clamp(RobotContainer.poleHeight, 0, 3)]);
     }
 
     public Command goToEffectorAngle() {
-        return effector.GoToAngleDegrees(SCORE_ANGLES[Helpers.clamp((int) poleHeightSubscriber.get(), 0, 3)]);
+        return effector.GoToAngleDegrees(SCORE_ANGLES[Helpers.clamp(RobotContainer.poleHeight, 0, 3)]);
     }
 
     public Command ejectCoral() {

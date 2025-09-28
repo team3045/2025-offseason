@@ -18,6 +18,6 @@ public class CoralIntakeConstants {
     //Angle difference between stowed and intaking
     public static double ANGLEDIFF = 0;
     public static double ANGLETOLERANCE = 1;
-    public static double INTAKELENGTHSECONDS = 2;
+    public static double INTAKELENGTHSECONDS = 5;
     public static double DEFAULTCANRANGEDIST = 0.1;
 }
