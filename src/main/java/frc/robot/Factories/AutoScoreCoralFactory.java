@@ -17,7 +17,7 @@ public class AutoScoreCoralFactory {
     private static CommandSwerveDrivetrain drivetrain = RobotContainer.drivetrain;
     private static Elevator elevator = RobotContainer.elevator;
     private static EndEffector effector = RobotContainer.effector;
-    public static boolean isRight = false;
+    public boolean isRight = false;
 
     private Translation2d midpoint(Translation2d a, Translation2d b) {
         return new Translation2d(a.getX() + (b.getX() - a.getX())/2, a.getY() + (b.getY() - a.getY())/2);

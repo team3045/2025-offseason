@@ -41,4 +41,7 @@ public class DriveConstants {
     public static final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     public static final SwerveRequest.RobotCentric driveBack = new SwerveRequest.RobotCentric()
             .withVelocityX(MAX_VELOCITY * -0.2);
+
+        public static final SwerveRequest.RobotCentric driveForward = new SwerveRequest.RobotCentric()
+            .withVelocityX(MAX_VELOCITY * 0.2);
 }

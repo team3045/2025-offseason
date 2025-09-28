@@ -302,4 +302,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command DriveBack() {
         return applyRequest(() -> DriveConstants.driveBack).withTimeout(0.2);
     }
+
+    public Command DriveFoward() {
+        return applyRequest(() -> DriveConstants.driveForward).withTimeout(0.2);
+    }
 }

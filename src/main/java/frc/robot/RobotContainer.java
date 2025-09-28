@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.vision.VisionConstants;
+import frc.robot.Factories.AutoScoreAlgaeFactory;
 import frc.robot.Factories.AutoScoreCoralFactory;
 import frc.robot.Subsystems.AlgaeIntake;
+import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
 import frc.robot.Subsystems.Elevator;
@@ -40,8 +42,6 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final GremlinPS4Controller joystick = new GremlinPS4Controller(0);
   private final CommandGenericHID buttonBoard = new CommandGenericHID(1);
@@ -54,8 +54,10 @@ public class RobotContainer {
   public final static AlgaeIntake algaeintake = new AlgaeIntake(effector);
   public final static CoralHandler intake = new CoralHandler(effector);
   public final static Elevator elevator = new Elevator(algaeintake);
+  public final static Climber climber = new Climber();
   public final static Vision vision = new Vision(VisionConstants.cameraIndeces);
   public final static AutoScoreCoralFactory scoreFactory = new AutoScoreCoralFactory();
+  public final static AutoScoreAlgaeFactory algaeFactory = new AutoScoreAlgaeFactory();
   
   public static Pose3d[] componentPoses = new Pose3d[8];
 
@@ -90,6 +92,8 @@ public class RobotContainer {
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
     joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
+    joystick.L2().onTrue(algaeFactory.fullGrab());
+    joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

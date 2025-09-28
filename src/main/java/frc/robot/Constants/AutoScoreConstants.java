@@ -38,12 +38,42 @@ public class AutoScoreConstants {
         FlippingUtil.flipFieldPose(POLEPOSESRED[11])
     };
 
+    public static Pose2d[] ALGAEPOSESRED = {
+        new Pose2d(new Translation2d(3.18, 4.0), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(new Translation2d(3.85, 2.82), new Rotation2d(Units.degreesToRadians(60))),
+        new Pose2d(new Translation2d(5.15, 2.85), new Rotation2d(Units.degreesToRadians(120))),
+        new Pose2d(new Translation2d(5.85, 4.0), new Rotation2d(Units.degreesToRadians(180))),
+        new Pose2d(new Translation2d(5.15, 5.18), new Rotation2d(Units.degreesToRadians(240))),
+        new Pose2d(new Translation2d(3.18, 5.16), new Rotation2d(Units.degreesToRadians(300)))
+    };
+
+    public static Pose2d[] ALGAEPOSESBLUE = {
+        FlippingUtil.flipFieldPose(ALGAEPOSESRED[0]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESRED[1]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESRED[2]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESRED[3]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESRED[4]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESRED[5])
+    };
+
+    public static Pose2d BARGEPOSEBLUE = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BARGEPOSERED = new Pose2d(new Translation2d(), new Rotation2d());
+    public static double BARGEELEVATORHEIGHT = 2;
+    public static double BARGEENDEFFECTORANGLE = 180;
+
     public static double[] SCORE_HEIGHTS = {
         0.5,
         0.8,
         1.2,
         1.6
     };
+
+    public static double[] ALGAEGRABHEIGHTS = {
+        0.6,
+        0.8
+    };
+
+    public static double ALGAEGRABANGLE = -40;
 
     public static double[] SCORE_ANGLES = {
         -45,
