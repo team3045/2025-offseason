@@ -72,10 +72,10 @@ public class AutoScoreAlgaeFactory {
 
     public Command fullGrab() {
         algaeNum = getAlgaeNum();
-        return goToPose().alongWith(goToElevatorHeight()).andThen(effector.GoToAngleDegrees(ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(effector.Stow()).andThen(drivetrain.DriveBack()).alongWith(elevator.Stow());
+        return goToPose().alongWith(goToElevatorHeight()).andThen(effector.GoToAngleDegrees(ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(effector.Stow()).andThen(drivetrain.DriveBack()).andThen(elevator.Stow());
     }
 
     public Command fullBarge() {
-        return elevator.GoToHeight(BARGEELEVATORHEIGHT).andThen(effector.GoToAngleDegrees(BARGEENDEFFECTORANGLE)).andThen(drivetrain.DriveBack()).andThen(effector.Outtake()).andThen(drivetrain.DriveFoward()).alongWith(effector.Stow()).andThen(elevator.Stow());
+        return elevator.GoToHeight(BARGEELEVATORHEIGHT).andThen(effector.GoToAngleDegrees(BARGEENDEFFECTORANGLE)).andThen(drivetrain.DriveBack()).andThen(effector.Outtake()).andThen(drivetrain.DriveFoward()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 }

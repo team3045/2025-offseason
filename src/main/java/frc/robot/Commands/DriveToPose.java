@@ -74,9 +74,8 @@ public class DriveToPose extends Command {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else {
-      goalPose = AutoBuilder.shouldFlip() ? FlippingUtil.flipFieldPose(goalPoseSupplier.get()) : goalPoseSupplier.get();
     }
+    goalPose = goalPoseSupplier.get();
 
     addRequirements(this.drivetrainSubsystem);
   }
@@ -91,9 +90,8 @@ public class DriveToPose extends Command {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else {
-      goalPose = AutoBuilder.shouldFlip() ? FlippingUtil.flipFieldPose(goalPoseSupplier.get()) : goalPoseSupplier.get();
     }
+    goalPose = goalPoseSupplier.get();
 
     thetaController.setGoal(goalPose.getRotation().getRadians());
     xController.setSetpoint(goalPose.getX());

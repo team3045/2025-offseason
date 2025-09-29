@@ -81,6 +81,7 @@ public class CoralHandler extends SubsystemBase {
   public void periodic() {
     time = Timer.getTimestamp();
     SmartDashboard.putString("CoralHandler/IntakeState", state.toString());
+    SmartDashboard.putBoolean("CoralHandler/HasCoral", effector.HasCoral().getAsBoolean());
     // This method will be called once per scheduler run
     pivot.setNeutralMode(NeutralModeValue.Brake);
     switch (state) {

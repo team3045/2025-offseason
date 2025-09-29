@@ -6,6 +6,7 @@ package frc.robot.Subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Helpers.ClimberState;
@@ -16,10 +17,12 @@ public class Climber extends SubsystemBase {
   private ClimberState state;
   private TalonFX rollers;
   private TalonFX pivot;
+  private double startPos;
   public Climber() {
     state = ClimberState.STOWED;
     rollers = new TalonFX(ROLLERID, "Team 3045");
     pivot = new TalonFX(PIVOTID, "Team 3045");
+    startPos = pivot.getRotorPosition().getValueAsDouble();
   }
 
   public Command MoveOut() {
@@ -32,17 +35,19 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putString("Climber/State", state.toString());
     switch (state) {
       case MOVINGOUT:
         rollers.set(ROLLERSPEED);
         pivot.set(PIVOTSPEED);
         break;
       case MOVINGIN:
-        double distFromTarget = -pivot.getRotorPosition().getValueAsDouble();
+        double distFromTarget = -startPos + pivot.getRotorPosition().getValueAsDouble();
+        SmartDashboard.putNumber("Climber/DistFromTarget", distFromTarget);
         distFromTarget /= DISTDIVISOR;
         pivot.set(distFromTarget);
         rollers.set(HOLDSPEED);
-        if (distFromTarget < ROTTOLLERANCE) {
+        if (Math.abs(distFromTarget) < ROTTOLLERANCE) {
           state = ClimberState.CLIMBED;
         }
         break;

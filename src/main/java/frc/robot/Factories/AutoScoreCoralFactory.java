@@ -77,6 +77,6 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight()).andThen(goToEffectorAngle()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).alongWith(effector.Stow()).alongWith(elevator.Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight()).andThen(goToEffectorAngle()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 }

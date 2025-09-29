@@ -39,6 +39,8 @@ public class AlgaeIntake extends SubsystemBase {
     pivot = new TalonFX(PIVOTID, "Team 3045");
     canRange = new CANrange(CANRANGEID, "Team 3045");
     effector = Effector;
+    state = HandlerState.IDLE;
+    prevState = HandlerState.IDLE;
     rangeSupplier = canRange.getDistance().asSupplier();
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
@@ -98,17 +100,17 @@ public class AlgaeIntake extends SubsystemBase {
   @Override
   public void periodic() {
     time = Timer.getTimestamp();
-    SmartDashboard.putNumber("Range", rangeSupplier.get().baseUnitMagnitude());
-    SmartDashboard.putNumber("PivotCurrent", Math.abs(pivot.getTorqueCurrent().getValueAsDouble()));
-    SmartDashboard.putNumber("PivotVelocity", Math.abs(pivot.getVelocity().getValueAsDouble()));
-    SmartDashboard.putString("IntakeState", state.toString());
+    SmartDashboard.putNumber("AlgaeIntake/Range", rangeSupplier.get().baseUnitMagnitude());
+    SmartDashboard.putNumber("AlgaeIntake/PivotCurrent", Math.abs(pivot.getTorqueCurrent().getValueAsDouble()));
+    SmartDashboard.putNumber("AlgaeIntake/PivotVelocity", Math.abs(pivot.getVelocity().getValueAsDouble()));
+    SmartDashboard.putString("AlgaeIntake/IntakeState", state.toString());
     // This method will be called once per scheduler run
     pivot.setNeutralMode(NeutralModeValue.Brake);
     switch (state) {
       case MOVINGDOWN:
         pivot.set(-PIVOTSPEED);
         if (isIntaking) {
-          if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+          if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 20 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
             state = prevState;
             pivot.set(0);
           }
@@ -121,7 +123,7 @@ public class AlgaeIntake extends SubsystemBase {
         break;
       case MOVINGUP:
         pivot.set(PIVOTSPEED);
-        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 30 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
+        if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 20 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 5) {
           state = prevState;
           pivot.set(0);
         }

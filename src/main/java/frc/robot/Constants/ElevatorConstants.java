@@ -8,7 +8,6 @@ package frc.robot.Constants;
 public class ElevatorConstants {
     public static int MOTOR1ID = 18;
     public static int MOTOR2ID = 32;
-    public static int ALGAEINTAKEMOTOR = 15;
 
     public static double PINNIONTODRUMRATIO = 0.33333; //Ratio between pinnions and drum
     public static double DRUMROTATIONTODISTANCE = 0.165; //What one rotation is for the drum to distance

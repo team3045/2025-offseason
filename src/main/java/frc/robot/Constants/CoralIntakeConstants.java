@@ -9,7 +9,6 @@ public class CoralIntakeConstants {
     public static int ROLLERID = 14;
     public static int PIVOTID = 13;
     public static int INDEXERID = 33;
-    public static int CANRANGEID = 37;
 
     public static double ROLLERSPEED = -1;
     public static double PIVOTSPEED = 0.2;

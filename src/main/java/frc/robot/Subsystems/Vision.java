@@ -11,7 +11,7 @@ import frc.robot.vision.LimelightCamera;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
-  ArrayList<LimelightCamera> cameras;
+  ArrayList<LimelightCamera> cameras = new ArrayList<>();
   public Vision(int idx[]) {
     for (int i : idx) {
       cameras.add(new LimelightCamera(i));
