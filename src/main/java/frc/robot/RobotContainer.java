@@ -10,16 +10,10 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.IntegerSubscriber;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.vision.VisionConstants;
 import frc.robot.Factories.AutoScoreAlgaeFactory;
@@ -71,7 +65,7 @@ public class RobotContainer {
   }
 
   public Command IntakeCoral() {
-    return effector.Stow().andThen(elevator.Stow()).andThen(intake.Intake());
+    return effector.Stow().andThen(elevator.Stow()).onlyWhile(effector.AtTargetAngle()).andThen(intake.Intake());
   }
 
   public RobotContainer() {
@@ -87,13 +81,15 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    joystick.R2().onTrue(intake.Intake());
+    joystick.R2().onTrue(IntakeCoral());
     joystick.R3().onTrue(intake.Outtake());
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
     joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
     joystick.L2().onTrue(algaeFactory.fullGrab());
+    joystick.square().onTrue(elevator.GoToHeight(1).andThen(effector.GoToAngleDegrees(20)));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
+    joystick.cross().onTrue(effector.Stow());
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

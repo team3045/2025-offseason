@@ -115,7 +115,7 @@ public class EndEffector extends SubsystemBase {
   @Override
   public void periodic() {
     currRot = encoderTop.getAbsolutePosition().getValueAsDouble() - zero;
-    double rotDiff = currRot - (targetRot + 0.04);
+    double rotDiff = currRot - targetRot;
     double rotDiffShifted = currRot + 1 - targetRot;
     if (Math.abs(rotDiffShifted) < Math.abs(rotDiff)) {
       rotDiff = rotDiffShifted;

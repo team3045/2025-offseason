@@ -8,7 +8,7 @@ public class EndEffectorConstants {
     public static int ENCODERBOTTOMID = 31;
     public static int ENCODERTOPID = 32;
     public static double ENCODERROTDIFFPERFULLROT = 0.01;
-    public static double SPEEDDOWN = 1;
+    public static double SPEEDDOWN = 0.25;
     public static double HOLDSPEED = 0.01;
     public static double ANGLETOLERANCE = 0.01;
     public static double EFFECTORSPEED = 0.5;

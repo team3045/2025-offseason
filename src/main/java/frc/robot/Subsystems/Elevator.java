@@ -71,6 +71,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Speed", speed);
     SmartDashboard.putNumber("Elevator/TargetRot", targetRotations);
     SmartDashboard.putNumber("Elevator/CurrRot", numRotations);
+    SmartDashboard.putNumber("Elevator/CurrHeight", elevatorHeight);
     if (Math.abs(rotDiff) > 0.2) {
       elevatorMotor1.set(Math.min(speed, 0.5));
       elevatorMotor2.set(Math.min(speed, 0.5));
@@ -78,7 +79,7 @@ public class Elevator extends SubsystemBase {
       elevatorMotor1.set(HOLDSPEED);
       elevatorMotor2.set(HOLDSPEED);
     }
-    if (elevatorHeight < LOWERCLEARENCEBOUND && elevatorHeight > UPPERCLEARENCEBOUND) {
+    if (elevatorHeight < UPPERCLEARENCEBOUND) {
       algaeIntake.clearWay();
     } else {
       algaeIntake.moveUp();
