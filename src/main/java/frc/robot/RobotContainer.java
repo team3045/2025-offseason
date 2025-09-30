@@ -89,7 +89,7 @@ public class RobotContainer {
     joystick.L2().onTrue(algaeFactory.fullGrab());
     joystick.square().onTrue(elevator.GoToHeight(1).andThen(effector.GoToAngleDegrees(20)));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
-    joystick.cross().onTrue(effector.Stow());
+    joystick.cross().onTrue(effector.Stow().andThen(elevator.Stow()));
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
