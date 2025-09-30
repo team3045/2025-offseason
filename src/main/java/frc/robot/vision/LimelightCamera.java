@@ -27,7 +27,7 @@ public class LimelightCamera {
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraName);
 
         //We dont use vision for orientation
-        if (poseEstimate.tagCount > 0) {
+        if (poseEstimate != null && poseEstimate.tagCount > 0) {
             drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds, VecBuilder.fill(0.1, 0.1, 99999));
         }
     }

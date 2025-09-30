@@ -8,9 +8,9 @@ package frc.robot.Constants;
 public class ClimberConstants {
     public static int PIVOTID = 16;
     public static int ROLLERID = 20;
-    public static double DISTDIVISOR = 4;
+    public static double DISTDIVISOR = 16;
     public static double HOLDSPEED = 0.1;
-    public static double ROTTOLLERANCE = 2;
-    public static double PIVOTSPEED = 0.5;
+    public static double ROTTOLLERANCE = 10;
+    public static double PIVOTSPEED = 0.2;
     public static double ROLLERSPEED = 0.2;
 }

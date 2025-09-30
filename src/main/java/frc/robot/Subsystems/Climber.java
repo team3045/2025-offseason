@@ -42,14 +42,14 @@ public class Climber extends SubsystemBase {
         pivot.set(PIVOTSPEED);
         break;
       case MOVINGIN:
-        double distFromTarget = -startPos + pivot.getRotorPosition().getValueAsDouble();
+        double distFromTarget = startPos - pivot.getRotorPosition().getValueAsDouble();
         SmartDashboard.putNumber("Climber/DistFromTarget", distFromTarget);
-        distFromTarget /= DISTDIVISOR;
-        pivot.set(distFromTarget);
-        rollers.set(HOLDSPEED);
         if (Math.abs(distFromTarget) < ROTTOLLERANCE) {
           state = ClimberState.CLIMBED;
         }
+        distFromTarget /= DISTDIVISOR;
+        pivot.set(distFromTarget);
+        rollers.set(HOLDSPEED);
         break;
       case STOWED:
         pivot.set(0);
