@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import dev.doglog.DogLogOptions;
@@ -105,12 +106,23 @@ public class RobotContainer {
     return Commands.print("No autonomous command configured");
   }
 
-  // public void registerPathPlannerCommands(){
+  public void registerPathPlannerCommands(){
+    NamedCommands.registerCommand("IntakeCoral", IntakeCoral());
+    NamedCommands.registerCommand("BargeScore", algaeFactory.fullBarge());
+    NamedCommands.registerCommand("8ScoreL4", scoreFactory.fullAutoscore(8, 3));
+    NamedCommands.registerCommand("7ScoreL4", scoreFactory.fullAutoscore(7, 3));
+    NamedCommands.registerCommand("6ScoreL4", scoreFactory.fullAutoscore(6, 3));
+    NamedCommands.registerCommand("5ScoreL4", scoreFactory.fullAutoscore(5, 3));
+    NamedCommands.registerCommand("4ScoreL4", scoreFactory.fullAutoscore(4, 3));
+    NamedCommands.registerCommand("3ScoreL4", scoreFactory.fullAutoscore(3, 3));
+    NamedCommands.registerCommand("2GrabAlgae", algaeFactory.fullGrab(2));
+    NamedCommands.registerCommand("3GrabAlgae", algaeFactory.fullGrab(3));
+    NamedCommands.registerCommand("4GrabAlgae", algaeFactory.fullGrab(4));
   //   NamedCommands.registerCommand("intake", 
   //     intake.goToAngleDegrees(IntakeConstants.minAngle)
   //       .andThen(intake.applyDownwardCurrentFront()) // could be upward who knows
   //       //.andThen(Commands.waitUntil(nextMechanism.hasCoral?))
   //       .andThen(intake.stow()).alongWith(intake.zeroCurrentFront())
   //     );
-  // }
+  }
 }

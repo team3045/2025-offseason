@@ -57,12 +57,12 @@ public class AutoScoreCoralFactory {
         return scorePole;
     }
 
-    public Command goToElevatorHeight() {
-        return elevator.GoToHeight(SCORE_HEIGHTS[Helpers.clamp(RobotContainer.poleHeight, 0, 3)]);
+    public Command goToElevatorHeight(int height) {
+        return elevator.GoToHeight(SCORE_HEIGHTS[Helpers.clamp(height, 0, 3)]);
     }
 
-    public Command goToEffectorAngle() {
-        return effector.GoToAngleDegrees(SCORE_ANGLES[Helpers.clamp(RobotContainer.poleHeight, 0, 3)]);
+    public Command goToEffectorAngle(int height) {
+        return effector.GoToAngleDegrees(SCORE_ANGLES[Helpers.clamp(height, 0, 3)]);
     }
 
     public Command ejectCoral() {
@@ -77,6 +77,10 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight()).andThen(goToEffectorAngle()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight(RobotContainer.poleHeight)).andThen(goToEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+    }
+
+    public Command fullAutoscore(int poleNum, int height) {
+        return goToScorePos(poleNum).alongWith(goToElevatorHeight(height)).andThen(goToEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 }
