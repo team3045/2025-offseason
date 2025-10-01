@@ -11,7 +11,14 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.IntegerSubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -41,6 +48,11 @@ public class RobotContainer {
   private final GremlinPS4Controller joystick = new GremlinPS4Controller(0);
   private final CommandGenericHID buttonBoard = new CommandGenericHID(1);
   public static int poleHeight;
+
+  private IntegerSubscriber poleNumberSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
+      .getIntegerTopic("Pole").subscribe(0);
+    private IntegerSubscriber heightSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
+      .getIntegerTopic("Height").subscribe(0);
   
   // public final Intake intake = new Intake();
 
@@ -89,8 +101,9 @@ public class RobotContainer {
     joystick.R2().onTrue(IntakeCoral());
     joystick.R3().onTrue(OuttakeCoral());
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
-    joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
+    // joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
+    // joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
+    joystick.L1().onTrue(scoreFactory.fullAutoscore((int) poleNumberSub.get(), (int) heightSub.get()));
     joystick.L2().onTrue(algaeFactory.fullGrab());
     joystick.square().onTrue(elevator.GoToHeight(1).andThen(effector.GoToAngleDegrees(20)));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
@@ -105,6 +118,7 @@ public class RobotContainer {
       )
     );
 
+    // ConfigButtonBoard();
     registerPathPlannerCommands();
   }
 
