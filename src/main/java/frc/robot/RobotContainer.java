@@ -66,7 +66,11 @@ public class RobotContainer {
   }
 
   public Command IntakeCoral() {
-    return effector.Stow().andThen(elevator.Stow()).onlyWhile(effector.AtTargetAngle()).andThen(intake.Intake());
+    return effector.Stow().andThen(elevator.Stow()).andThen(intake.Outtake());
+  }
+
+  public Command OuttakeCoral() {
+    return effector.Stow().andThen(elevator.GoToHeight(1)).onlyWhile(effector.AtTargetAngle()).andThen(intake.Intake());
   }
 
   public RobotContainer() {
@@ -83,7 +87,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     joystick.R2().onTrue(IntakeCoral());
-    joystick.R3().onTrue(intake.Outtake());
+    joystick.R3().onTrue(OuttakeCoral());
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
     joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));

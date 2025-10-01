@@ -59,7 +59,7 @@ public class AutoScoreConstants {
     public static Pose2d BARGEPOSEBLUE = new Pose2d(new Translation2d(), new Rotation2d());
     public static Pose2d BARGEPOSERED = new Pose2d(new Translation2d(), new Rotation2d());
     public static double BARGEELEVATORHEIGHT = 2;
-    public static double BARGEENDEFFECTORANGLE = 180;
+    public static double BARGEENDEFFECTORANGLE = 0.5;
 
     public static double[] SCORE_HEIGHTS = {
         0.5,
