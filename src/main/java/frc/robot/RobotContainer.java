@@ -100,6 +100,8 @@ public class RobotContainer {
               .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
+
+    registerPathPlannerCommands();
   }
 
   public Command getAutonomousCommand() {
