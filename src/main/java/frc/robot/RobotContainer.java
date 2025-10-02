@@ -78,11 +78,11 @@ public class RobotContainer {
   }
 
   public Command IntakeCoral() {
-    return effector.Stow().andThen(elevator.Stow()).andThen(intake.Outtake());
+    return effector.Stow().andThen(elevator.Stow()).andThen(intake.Intake());
   }
 
   public Command OuttakeCoral() {
-    return effector.Stow().andThen(elevator.GoToHeight(1)).onlyWhile(effector.AtTargetAngle()).andThen(intake.Intake());
+    return effector.Stow().andThen(elevator.GoToHeight(1)).onlyWhile(effector.AtTargetAngle()).andThen(intake.Outtake());
   }
 
   public RobotContainer() {
@@ -103,17 +103,18 @@ public class RobotContainer {
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     // joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
     // joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
-    joystick.L1().onTrue(scoreFactory.fullAutoscore((int) poleNumberSub.get(), (int) heightSub.get()));
+    joystick.L1().onTrue(scoreFactory.fullAutoscore(0, 2));
+    // joystick.L1().onTrue(scoreFactory.fullAutoscore((int) poleNumberSub.get(), (int) heightSub.get()));
     joystick.L2().onTrue(algaeFactory.fullGrab());
-    joystick.square().onTrue(elevator.GoToHeight(1).andThen(effector.GoToAngleDegrees(20)));
+    joystick.square().onTrue(elevator.GoToHeight(0.7).andThen(effector.GoToAngleDegrees(220)));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
     joystick.cross().onTrue(effector.Stow().andThen(elevator.Stow()));
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
       drivetrain.applyRequest(() ->
-          drive.withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-              .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+          drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+              .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
               .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );

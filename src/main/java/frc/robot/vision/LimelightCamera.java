@@ -13,9 +13,9 @@ public class LimelightCamera {
         cameraName = VisionConstants.cameraNames[cameraSettingsIndex];
         LimelightHelpers.setCameraPose_RobotSpace(
             VisionConstants.cameraNames[cameraSettingsIndex],
-            VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getZ(),
             VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getX(),
             VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getY(),
+            VisionConstants.cameraPoses[cameraSettingsIndex].getTranslation().getZ(),
             VisionConstants.cameraPoses[cameraSettingsIndex].getRotation().getZ(),
             VisionConstants.cameraPoses[cameraSettingsIndex].getRotation().getY(),
             VisionConstants.cameraPoses[cameraSettingsIndex].getRotation().getX()

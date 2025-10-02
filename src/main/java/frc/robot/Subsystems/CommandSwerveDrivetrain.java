@@ -224,7 +224,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void periodic() {
         if (getState().Pose != null) {
-            SmartDashboard.putNumberArray("Pose", new Double[]{getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation().getDegrees()});
+            SmartDashboard.putNumberArray("Pose", new Double[]{getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation().getRadians()});
         }
         /*
          * Periodically try to apply the operator perspective.

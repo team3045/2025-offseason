@@ -10,11 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ElevatorConstants.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
-  private double elevatorHeight;
+  public double elevatorHeight;
   private double numRotations;
   private double targetHeight;
   private double targetRotations;
@@ -45,6 +47,10 @@ public class Elevator extends SubsystemBase {
 
   public boolean atTargetHeight() {
     return Math.abs(elevatorHeight - targetHeight) <= HEIGHTTOLLERANCE;
+  }
+
+  public BooleanSupplier AtTargetHeight() {
+    return () -> atTargetHeight();
   }
 
   public void goToHeight(double TargetHeight) {

@@ -8,7 +8,6 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.config.SoftLimitConfig;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;

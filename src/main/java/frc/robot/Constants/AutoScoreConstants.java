@@ -9,33 +9,33 @@ import edu.wpi.first.math.util.Units;
 
 public class AutoScoreConstants {
     //Each pole in order
-    public static Pose2d[] POLEPOSESRED = {
-        new Pose2d(new Translation2d(3.18, 4.18), new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(new Translation2d(3.17, 3.850), new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(new Translation2d(3.69, 2.91), new Rotation2d(Units.degreesToRadians(60))),
-        new Pose2d(new Translation2d(3.97, 2.76), new Rotation2d(Units.degreesToRadians(60))),
-        new Pose2d(new Translation2d(5.02, 2.76), new Rotation2d(Units.degreesToRadians(120))),
-        new Pose2d(new Translation2d(5.32, 2.94), new Rotation2d(Units.degreesToRadians(120))),
-        new Pose2d(new Translation2d(5.85, 3.8), new Rotation2d(Units.degreesToRadians(180))),
-        new Pose2d(new Translation2d(5.85, 4.21), new Rotation2d(Units.degreesToRadians(180))),
-        new Pose2d(new Translation2d(5.30, 5.1), new Rotation2d(Units.degreesToRadians(240))),
-        new Pose2d(new Translation2d(5.011, 5.26), new Rotation2d(Units.degreesToRadians(240))),
-        new Pose2d(new Translation2d(3.97, 5.26), new Rotation2d(Units.degreesToRadians(300))),
-        new Pose2d(new Translation2d(3.66, 5.08), new Rotation2d(Units.degreesToRadians(300)))
-    };
     public static Pose2d[] POLEPOSESBLUE = {
-        FlippingUtil.flipFieldPose(POLEPOSESRED[0]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[1]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[2]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[3]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[4]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[5]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[6]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[7]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[8]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[9]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[10]),
-        FlippingUtil.flipFieldPose(POLEPOSESRED[11])
+        new Pose2d(new Translation2d(2.69, 3.79), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(new Translation2d(2.73, 4.26), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(new Translation2d(3.54, 5.51), new Rotation2d(Units.degreesToRadians(60))),
+        new Pose2d(new Translation2d(3.82, 5.70), new Rotation2d(Units.degreesToRadians(60))),
+        new Pose2d(new Translation2d(5.33, 5.59), new Rotation2d(Units.degreesToRadians(120))),
+        new Pose2d(new Translation2d(5.69, 5.31), new Rotation2d(Units.degreesToRadians(120))),
+        new Pose2d(new Translation2d(6.34, 4.05), new Rotation2d(Units.degreesToRadians(180))),
+        new Pose2d(new Translation2d(6.34, 3.75), new Rotation2d(Units.degreesToRadians(180))),
+        new Pose2d(new Translation2d(5.37, 2.47), new Rotation2d(Units.degreesToRadians(240))),
+        new Pose2d(new Translation2d(5.12, 2.23), new Rotation2d(Units.degreesToRadians(240))),
+        new Pose2d(new Translation2d(4.04, 2.39), new Rotation2d(Units.degreesToRadians(300))),
+        new Pose2d(new Translation2d(3.35, 2.66), new Rotation2d(Units.degreesToRadians(300)))
+    };
+    public static Pose2d[] POLEPOSESRED = {
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[0]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[1]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[2]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[3]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[4]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[5]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[6]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[7]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[8]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[9]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[10]),
+        FlippingUtil.flipFieldPose(POLEPOSESBLUE[11])
     };
 
     public static Pose2d[] ALGAEPOSESRED = {
@@ -62,10 +62,10 @@ public class AutoScoreConstants {
     public static double BARGEENDEFFECTORANGLE = 0.5;
 
     public static double[] SCORE_HEIGHTS = {
-        0.5,
-        0.8,
-        1.2,
-        1.6
+        0,
+        0.256,
+        0.689,
+        1.45
     };
 
     public static double[] ALGAEGRABHEIGHTS = {
@@ -76,15 +76,15 @@ public class AutoScoreConstants {
     public static double ALGAEGRABANGLE = -40;
 
     public static double[] SCORE_ANGLES = {
-        -45,
-        -45,
-        -45,
-        0
+        0.547,
+        0.573,
+        0.585,
+        0.655
     };
 
     public static Translation2d[] REEF_CENTERS = {
-        new Translation2d(10, 10),
-        new Translation2d(-10, 10)
+        new Translation2d(4, 4),
+        new Translation2d(13.69, 4)
     };
 
     public static double BACKUP_DIST = 1;

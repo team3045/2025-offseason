@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class EndEffector extends SubsystemBase {
   private double currRot;
@@ -33,6 +34,7 @@ public class EndEffector extends SubsystemBase {
   private CANrange algaeRange;
   private Supplier<Distance> coralSupplier;
   private Supplier<Distance> algaeSupplier;
+  private boolean isStowing;
 
   public EndEffector() {
     effectorMotor = new TalonFX(EFFECTORID, "Team 3045");
@@ -49,9 +51,12 @@ public class EndEffector extends SubsystemBase {
     targetRot = 0;
     isEffectorRunning = false;
     dirMult = 1;
+    isStowing = false;
   }
 
   public void stow() {
+    RobotContainer.climber.ClearWay();
+    isStowing = true;
     goToRot(STOWANGLE);
   }
 
@@ -60,6 +65,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void goToRot(double TargetRot) {
+    RobotContainer.climber.ClearWay();
     targetRot = TargetRot;
   }
 
@@ -69,6 +75,8 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void goToAngleDegrees(double angle) {
+    RobotContainer.climber.clearWay();
+    isStowing = false;
     goToRot(Units.degreesToRotations(angle));
   }
 
@@ -120,11 +128,17 @@ public class EndEffector extends SubsystemBase {
     if (Math.abs(rotDiffShifted) < Math.abs(rotDiff)) {
       rotDiff = rotDiffShifted;
     }
+
+    // if (isStowing) {
+    //   rotDiff = targetRot - currRot;
+    // }
+
     double speed = -rotDiff/SPEEDDOWN;
     SmartDashboard.putNumber("EndEffector/CurrRot", currRot);
     SmartDashboard.putNumber("EndEffector/Zero", zero);
     SmartDashboard.putNumber("EndEffector/RotDiff", speed);
     SmartDashboard.putNumber("EndEffector/TargetRot", targetRot);
+    SmartDashboard.putBoolean("EndEffector/IsStowing", isStowing);
     
     if (Math.abs(rotDiff) > ANGLETOLERANCE) {
       effectorTilterMotor.set(speed);

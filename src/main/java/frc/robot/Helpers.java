@@ -14,7 +14,8 @@ public class Helpers {
         STOWED,
         MOVINGOUT,
         MOVINGIN,
-        CLIMBED
+        CLIMBED,
+        CLEARINGWAY
     }
 
     public static int clamp(int val, int lower, int higher) {

@@ -18,11 +18,13 @@ public class Climber extends SubsystemBase {
   private TalonFX rollers;
   private TalonFX pivot;
   private double startPos;
+  private double distFromTarget;
   public Climber() {
     state = ClimberState.STOWED;
     rollers = new TalonFX(ROLLERID, "Team 3045");
     pivot = new TalonFX(PIVOTID, "Team 3045");
     startPos = pivot.getRotorPosition().getValueAsDouble();
+    distFromTarget = 0;
   }
 
   public Command MoveOut() {
@@ -31,6 +33,14 @@ public class Climber extends SubsystemBase {
 
   public Command Climb() {
     return this.runOnce(() -> state = ClimberState.MOVINGIN);
+  }
+
+  public void clearWay() {
+    state = ClimberState.CLEARINGWAY;
+  }
+
+  public Command ClearWay() {
+    return this.runOnce(() -> state = ClimberState.CLEARINGWAY);
   }
 
   @Override
@@ -42,7 +52,7 @@ public class Climber extends SubsystemBase {
         pivot.set(PIVOTSPEED);
         break;
       case MOVINGIN:
-        double distFromTarget = startPos - pivot.getRotorPosition().getValueAsDouble();
+        distFromTarget = startPos - pivot.getRotorPosition().getValueAsDouble();
         SmartDashboard.putNumber("Climber/DistFromTarget", distFromTarget);
         if (Math.abs(distFromTarget) < ROTTOLLERANCE) {
           state = ClimberState.CLIMBED;
@@ -57,6 +67,16 @@ public class Climber extends SubsystemBase {
         break;
       case CLIMBED:
         pivot.set(0);
+        rollers.set(HOLDSPEED);
+        break;
+      case CLEARINGWAY:
+        distFromTarget = 30 - pivot.getRotorPosition().getValueAsDouble();
+        SmartDashboard.putNumber("Climber/DistFromTarget", distFromTarget);
+        if (Math.abs(distFromTarget) < ROTTOLLERANCE) {
+          state = ClimberState.CLIMBED;
+        }
+        distFromTarget /= DISTDIVISOR;
+        pivot.set(distFromTarget);
         rollers.set(HOLDSPEED);
         break;
     }

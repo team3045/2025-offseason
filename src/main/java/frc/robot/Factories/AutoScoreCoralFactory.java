@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Helpers;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.DriveToPose;
@@ -62,7 +63,7 @@ public class AutoScoreCoralFactory {
     }
 
     public Command goToEffectorAngle(int height) {
-        return effector.GoToAngleDegrees(SCORE_ANGLES[Helpers.clamp(height, 0, 3)]);
+        return effector.GoToRot(SCORE_ANGLES[Helpers.clamp(height, 0, 3)]);
     }
 
     public Command ejectCoral() {
@@ -77,10 +78,10 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight(RobotContainer.poleHeight)).andThen(goToEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight(RobotContainer.poleHeight)).andThen(effector.GoToRot(0.4)).andThen(goToEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 
     public Command fullAutoscore(int poleNum, int height) {
-        return goToScorePos(poleNum).alongWith(goToElevatorHeight(height)).andThen(goToEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(poleNum).withTimeout(1).alongWith(goToElevatorHeight(height)).andThen(goToEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 }
