@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Helpers;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.DriveToPose;
+import frc.robot.Commands.GoToHeightAndAngle;
+import frc.robot.Commands.Stow;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.EndEffector;
@@ -47,11 +49,11 @@ public class AutoScoreAlgaeFactory {
         }
     }
 
-    private static Command goToElevatorHeight() {
+    private static double getAlgaeGrabHeight() {
         if (DriverStation.getAlliance().get() == Alliance.Blue)
-            return elevator.GoToHeight(ALGAEGRABHEIGHTS[algaeNum % 2]);
+            return ALGAEGRABHEIGHTS[algaeNum % 2];
         else
-            return elevator.GoToHeight(ALGAEGRABHEIGHTS[(algaeNum + 1) % 2]);
+            return ALGAEGRABHEIGHTS[(algaeNum + 1) % 2];
         
     }
 
@@ -72,14 +74,15 @@ public class AutoScoreAlgaeFactory {
 
     public Command fullGrab() {
         algaeNum = getAlgaeNum();
-        return goToPose().alongWith(goToElevatorHeight()).andThen(effector.GoToAngleDegrees(ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(effector.Stow()).andThen(drivetrain.DriveBack()).andThen(elevator.Stow());
+        return goToPose().alongWith(new GoToHeightAndAngle(getAlgaeGrabHeight(), ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(drivetrain.DriveBack()).andThen(new Stow());
     }
 
-    public Command fullGrab(int algaeNum) {
-        return goToPose().alongWith(goToElevatorHeight()).andThen(effector.GoToAngleDegrees(ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(effector.Stow()).andThen(drivetrain.DriveBack()).andThen(elevator.Stow());
+    public Command fullGrab(int AlgaeNum) {
+        algaeNum = AlgaeNum;
+        return goToPose().alongWith(new GoToHeightAndAngle(getAlgaeGrabHeight(), ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(drivetrain.DriveBack()).andThen(new Stow());
     }
 
     public Command fullBarge() {
-        return elevator.GoToHeight(BARGEELEVATORHEIGHT).andThen(effector.GoToAngleDegrees(BARGEENDEFFECTORANGLE)).andThen(drivetrain.DriveBack()).andThen(effector.Outtake()).andThen(drivetrain.DriveFoward()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return new GoToHeightAndAngle(BARGEELEVATORHEIGHT, BARGEENDEFFECTORANGLE).andThen(drivetrain.DriveBack()).andThen(effector.Outtake()).andThen(drivetrain.DriveFoward()).andThen(new Stow());
     }
 }

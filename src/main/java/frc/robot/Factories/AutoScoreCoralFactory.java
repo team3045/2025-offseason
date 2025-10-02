@@ -9,6 +9,7 @@ import frc.robot.Helpers;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.GoToHeightAndAngle;
+import frc.robot.Commands.Stow;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.EndEffector;
@@ -75,10 +76,10 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 
     public Command fullAutoscore(int poleNum, int height) {
-        return goToScorePos(poleNum).withTimeout(1).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(poleNum).withTimeout(1).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 }
