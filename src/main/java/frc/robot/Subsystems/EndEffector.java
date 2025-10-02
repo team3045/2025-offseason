@@ -18,13 +18,11 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
 public class EndEffector extends SubsystemBase {
   private double currRot;
   private TalonFX effectorMotor;
   private TalonFX effectorTilterMotor;
-  private CANcoder encoderBottom;
   private CANcoder encoderTop;
   private double targetRot;
   private boolean isEffectorRunning;
@@ -34,53 +32,47 @@ public class EndEffector extends SubsystemBase {
   private CANrange algaeRange;
   private Supplier<Distance> coralSupplier;
   private Supplier<Distance> algaeSupplier;
-  private boolean isStowing;
+  private int turnDir;
 
   public EndEffector() {
     effectorMotor = new TalonFX(EFFECTORID, "Team 3045");
     effectorTilterMotor = new TalonFX(EFFECTORTILTERID, "Team 3045");
-    encoderBottom = new CANcoder(ENCODERBOTTOMID, "Team 3045");
     encoderTop = new CANcoder(ENCODERTOPID, "Team 3045");
     coralRange = new CANrange(CORALRANGEID, "Team 3045");
     algaeRange = new CANrange(ALGAERANGEID, "Team 3045");
     coralSupplier = coralRange.getDistance().asSupplier();
     algaeSupplier = algaeRange.getDistance().asSupplier();
-    double numRotations = Math.floor((encoderTop.getAbsolutePosition().getValueAsDouble() - encoderBottom.getAbsolutePosition().getValueAsDouble())/ENCODERROTDIFFPERFULLROT);
     zero = encoderTop.getAbsolutePosition().getValueAsDouble();
     currRot = zero;
     targetRot = 0;
     isEffectorRunning = false;
     dirMult = 1;
-    isStowing = false;
   }
 
   public void stow() {
-    RobotContainer.climber.ClearWay();
-    isStowing = true;
     goToRot(STOWANGLE);
   }
 
   public Command Stow() {
+    turnDir = STOWDIR;
     return this.runOnce(() -> stow());
   }
 
   public void goToRot(double TargetRot) {
-    RobotContainer.climber.ClearWay();
     targetRot = TargetRot;
   }
 
-  //Rotations in -1 - 1; 1/-1 is top, 0 is bottom
   public Command GoToRot(double targetRot) {
+    turnDir = -STOWDIR;
     return this.runOnce(() -> goToRot(targetRot));
   }
 
   public void goToAngleDegrees(double angle) {
-    RobotContainer.climber.clearWay();
-    isStowing = false;
     goToRot(Units.degreesToRotations(angle));
   }
 
   public Command GoToAngleDegrees(double angle) {
+    turnDir = -STOWDIR;
     return this.runOnce(() -> goToAngleDegrees(angle));
   }
 
@@ -123,27 +115,18 @@ public class EndEffector extends SubsystemBase {
   @Override
   public void periodic() {
     currRot = encoderTop.getAbsolutePosition().getValueAsDouble() - zero;
-    double rotDiff = currRot - targetRot;
-    double rotDiffShifted = currRot + 1 - targetRot;
-    if (Math.abs(rotDiffShifted) < Math.abs(rotDiff)) {
-      rotDiff = rotDiffShifted;
-    }
+    double rotDiff = 0;
+    rotDiff = currRot - targetRot;
 
-    // if (isStowing) {
-    //   rotDiff = targetRot - currRot;
-    // }
-
-    double speed = -rotDiff/SPEEDDOWN;
+    double speed = (rotDiff/SPEEDDOWN) * turnDir;
     SmartDashboard.putNumber("EndEffector/CurrRot", currRot);
     SmartDashboard.putNumber("EndEffector/Zero", zero);
     SmartDashboard.putNumber("EndEffector/RotDiff", speed);
     SmartDashboard.putNumber("EndEffector/TargetRot", targetRot);
-    SmartDashboard.putBoolean("EndEffector/IsStowing", isStowing);
     
     if (Math.abs(rotDiff) > ANGLETOLERANCE) {
       effectorTilterMotor.set(speed);
     } else {
-      // effectorTilterMotor.set(Math.signum(speed) * HOLDSPEED);
       effectorTilterMotor.set(0);
     }
     if (isEffectorRunning) {

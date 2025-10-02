@@ -20,4 +20,5 @@ public class ElevatorConstants {
     public static double ALGAEHOLDSPEED = 0.0;
     public static double CORALINTAKEHEIGHT = 0.1;
     public static double ALGAEINTAKEHEIGHT = 0.5;
+    public static double SAFETURNHEIGHT = 0.5;
 }

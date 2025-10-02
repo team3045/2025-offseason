@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.generated.TunerConstants;
 import frc.robot.vision.VisionConstants;
+import frc.robot.Commands.Stow;
 import frc.robot.Factories.AutoScoreAlgaeFactory;
 import frc.robot.Factories.AutoScoreCoralFactory;
 import frc.robot.Subsystems.AlgaeIntake;
@@ -35,6 +36,7 @@ import frc.robot.Subsystems.EndEffector;
 import frc.robot.Subsystems.Vision;
 import frc.robot.commons.GremlinLogger;
 import frc.robot.commons.GremlinPS4Controller;
+import frc.robot.Commands.*;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -106,9 +108,9 @@ public class RobotContainer {
     joystick.L1().onTrue(scoreFactory.fullAutoscore(0, 2));
     // joystick.L1().onTrue(scoreFactory.fullAutoscore((int) poleNumberSub.get(), (int) heightSub.get()));
     joystick.L2().onTrue(algaeFactory.fullGrab());
-    joystick.square().onTrue(elevator.GoToHeight(0.7).andThen(effector.GoToAngleDegrees(220)));
+    joystick.square().onTrue(new GoToHeightAndAngle(0.7, 0.6));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
-    joystick.cross().onTrue(effector.Stow().andThen(elevator.Stow()));
+    joystick.cross().onTrue(new Stow());
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

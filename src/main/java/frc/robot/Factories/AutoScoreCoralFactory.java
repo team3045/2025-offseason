@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Helpers;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.DriveToPose;
+import frc.robot.Commands.GoToHeightAndAngle;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.EndEffector;
@@ -58,12 +59,8 @@ public class AutoScoreCoralFactory {
         return scorePole;
     }
 
-    public Command goToElevatorHeight(int height) {
-        return elevator.GoToHeight(SCORE_HEIGHTS[Helpers.clamp(height, 0, 3)]);
-    }
-
-    public Command goToEffectorAngle(int height) {
-        return effector.GoToRot(SCORE_ANGLES[Helpers.clamp(height, 0, 3)]);
+    public Command goToElevatorHeightAndEffectorAngle(int height) {
+        return new GoToHeightAndAngle(SCORE_HEIGHTS[Helpers.clamp(height, 0, 3)], SCORE_ANGLES[Helpers.clamp(height, 0, 3)]);
     }
 
     public Command ejectCoral() {
@@ -78,10 +75,10 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeight(RobotContainer.poleHeight)).andThen(effector.GoToRot(0.4)).andThen(goToEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 
     public Command fullAutoscore(int poleNum, int height) {
-        return goToScorePos(poleNum).withTimeout(1).alongWith(goToElevatorHeight(height)).andThen(goToEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
+        return goToScorePos(poleNum).withTimeout(1).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(effector.Stow()).andThen(elevator.Stow());
     }
 }
