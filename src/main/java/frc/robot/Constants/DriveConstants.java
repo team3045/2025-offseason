@@ -14,12 +14,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 /** Add your docs here. */
 public class DriveConstants {
-    public static final double TRANSLATION_KP = 1;
+    public static final double TRANSLATION_KP = 5;
     public static final double TRANSLATION_KI = 0;
     public static final double TRANSLATION_KD = 0;
     public static final double TRANLSATION_TOLLERANCE = 0.1;
 
-    public static final double ROTATION_KP = 1;
+    public static final double ROTATION_KP = 5;
     public static final double ROTATION_KI = 0;
     public static final double ROTATION_KD = 0;
     public static final double ROTATION_TOLLERANCE = 0.1;

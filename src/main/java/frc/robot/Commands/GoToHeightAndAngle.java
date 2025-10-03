@@ -4,6 +4,7 @@
 
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ElevatorConstants;
@@ -29,12 +30,16 @@ public class GoToHeightAndAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
+    SmartDashboard.putBoolean("Rotated", rotated);
     elevator.GoToHeight(ElevatorConstants.SAFETURNHEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
+    SmartDashboard.putBoolean("Rotated", rotated);
     if (!isAtSafeHeight) {
       isAtSafeHeight = elevator.atTargetHeight();
       if (!isAtSafeHeight) {
@@ -43,9 +48,11 @@ public class GoToHeightAndAngle extends Command {
     }
     endEffector.GoToRot(targetRotations);
     if (!rotated) {
-      rotated = endEffector.atTargetAngle();
-      if (!rotated) {
-        return;
+      if (endEffector.targetRot == targetRotations) {
+        rotated = endEffector.atTargetAngle();
+        if (!rotated) {
+          return;
+        }
       }
     }
     elevator.goToHeight(targetHeight);
@@ -58,6 +65,6 @@ public class GoToHeightAndAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atTargetHeight() && endEffector.atTargetAngle();
+    return elevator.atTargetHeight() && endEffector.atTargetAngle() && rotated;
   }
 }

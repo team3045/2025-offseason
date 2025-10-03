@@ -24,16 +24,14 @@ public class Elevator extends SubsystemBase {
 
   private TalonFX elevatorMotor1;
   private TalonFX elevatorMotor2;
-  private AlgaeIntake algaeIntake;
   
-  public Elevator(AlgaeIntake AlgaeIntake) {
+  public Elevator() {
     numRotations = 0;
     elevatorHeight = 0;
     targetHeight = 0;
     targetRotations = 0;
     elevatorMotor1 = new TalonFX(MOTOR1ID, "Team 3045");
     elevatorMotor2 = new TalonFX(MOTOR2ID, "Team 3045");
-    algaeIntake = AlgaeIntake;
     motorZero = elevatorMotor1.getRotorPosition().getValueAsDouble();
   }
 
@@ -78,17 +76,15 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/TargetRot", targetRotations);
     SmartDashboard.putNumber("Elevator/CurrRot", numRotations);
     SmartDashboard.putNumber("Elevator/CurrHeight", elevatorHeight);
+    SmartDashboard.putNumber("Elevator/TargetHeight", targetHeight);
+    SmartDashboard.putBoolean("Elevator/AtTarget", atTargetHeight());
+    
     if (Math.abs(rotDiff) > 0.2) {
       elevatorMotor1.set(Math.min(speed, 0.5));
       elevatorMotor2.set(Math.min(speed, 0.5));
     } else {
       elevatorMotor1.set(HOLDSPEED);
       elevatorMotor2.set(HOLDSPEED);
-    }
-    if (elevatorHeight < UPPERCLEARENCEBOUND) {
-      algaeIntake.clearWay();
-    } else {
-      algaeIntake.moveUp();
     }
   }
 }

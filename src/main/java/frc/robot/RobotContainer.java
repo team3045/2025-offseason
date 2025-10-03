@@ -27,7 +27,6 @@ import frc.robot.vision.VisionConstants;
 import frc.robot.Commands.Stow;
 import frc.robot.Factories.AutoScoreAlgaeFactory;
 import frc.robot.Factories.AutoScoreCoralFactory;
-import frc.robot.Subsystems.AlgaeIntake;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.CoralHandler;
@@ -60,9 +59,8 @@ public class RobotContainer {
 
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final static EndEffector effector = new EndEffector();
-  public final static AlgaeIntake algaeintake = new AlgaeIntake(effector);
   public final static CoralHandler intake = new CoralHandler(effector);
-  public final static Elevator elevator = new Elevator(algaeintake);
+  public final static Elevator elevator = new Elevator();
   public final static Climber climber = new Climber();
   public final static Vision vision = new Vision(VisionConstants.cameraIndeces);
   public final static AutoScoreCoralFactory scoreFactory = new AutoScoreCoralFactory();

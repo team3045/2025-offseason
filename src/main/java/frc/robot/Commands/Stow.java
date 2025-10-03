@@ -6,6 +6,7 @@ package frc.robot.Commands;
 
 import static frc.robot.Constants.EndEffectorConstants.STOWANGLE;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ElevatorConstants;
@@ -37,6 +38,8 @@ public class Stow extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
+    SmartDashboard.putBoolean("Rotated", rotated);
     if (!isAtSafeHeight) {
       isAtSafeHeight = elevator.atTargetHeight();
       if (!isAtSafeHeight) {
@@ -60,6 +63,6 @@ public class Stow extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atTargetHeight() && endEffector.atTargetAngle();
+    return elevator.atTargetHeight() && endEffector.atTargetAngle() && rotated;
   }
 }

@@ -80,6 +80,6 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore(int poleNum, int height) {
-        return goToScorePos(poleNum).withTimeout(1).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
+        return goToScorePos(poleNum).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 }

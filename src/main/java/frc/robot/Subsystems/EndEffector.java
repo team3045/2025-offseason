@@ -24,7 +24,7 @@ public class EndEffector extends SubsystemBase {
   private TalonFX effectorMotor;
   private TalonFX effectorTilterMotor;
   private CANcoder encoderTop;
-  private double targetRot;
+  public double targetRot;
   private boolean isEffectorRunning;
   private int dirMult;
   private double zero;
