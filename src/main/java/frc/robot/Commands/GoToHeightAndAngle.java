@@ -46,7 +46,7 @@ public class GoToHeightAndAngle extends Command {
         return;
       }
     }
-    endEffector.goToRot(targetRotations);
+    endEffector.goToRotations(targetRotations);
     if (!rotated) {
       rotated = endEffector.atTargetAngle();
       if (!rotated) {

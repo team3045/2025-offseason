@@ -50,29 +50,33 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void stow() {
+    turnDir = STOWDIR;
     goToRot(STOWANGLE);
   }
 
   public Command Stow() {
-    turnDir = STOWDIR;
     return this.runOnce(() -> stow());
   }
 
-  public void goToRot(double TargetRot) {
+  private void goToRot(double TargetRot) {
     targetRot = TargetRot;
   }
 
   public Command GoToRot(double targetRot) {
+    return this.runOnce(() -> goToRotations(targetRot));
+  }
+
+  public void goToRotations(double targetRot) {
     turnDir = -STOWDIR;
-    return this.runOnce(() -> goToRot(targetRot));
+    goToRot(targetRot);
   }
 
   public void goToAngleDegrees(double angle) {
+    turnDir = -STOWDIR;
     goToRot(Units.degreesToRotations(angle));
   }
 
   public Command GoToAngleDegrees(double angle) {
-    turnDir = -STOWDIR;
     return this.runOnce(() -> goToAngleDegrees(angle));
   }
 
