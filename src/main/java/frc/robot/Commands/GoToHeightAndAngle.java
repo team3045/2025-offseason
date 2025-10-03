@@ -32,7 +32,7 @@ public class GoToHeightAndAngle extends Command {
   public void initialize() {
     SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
     SmartDashboard.putBoolean("Rotated", rotated);
-    elevator.GoToHeight(ElevatorConstants.SAFETURNHEIGHT);
+    elevator.goToHeight(ElevatorConstants.SAFETURNHEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,13 +46,11 @@ public class GoToHeightAndAngle extends Command {
         return;
       }
     }
-    endEffector.GoToRot(targetRotations);
+    endEffector.goToRot(targetRotations);
     if (!rotated) {
-      if (endEffector.targetRot == targetRotations) {
-        rotated = endEffector.atTargetAngle();
-        if (!rotated) {
-          return;
-        }
+      rotated = endEffector.atTargetAngle();
+      if (!rotated) {
+        return;
       }
     }
     elevator.goToHeight(targetHeight);

@@ -18,13 +18,9 @@ public class Stow extends Command {
   /** Creates a new GoToHeightAndAngle. */
   private Elevator elevator = RobotContainer.elevator;
   private EndEffector endEffector = RobotContainer.effector;
-  private double targetHeight;
-  private double targetRotations;
   private boolean isAtSafeHeight;
   private boolean rotated;
   public Stow() {
-    targetHeight = 0;
-    targetRotations = STOWANGLE;
     isAtSafeHeight = false;
     rotated = false;
   }
@@ -32,7 +28,9 @@ public class Stow extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.GoToHeight(ElevatorConstants.SAFETURNHEIGHT);
+    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
+    SmartDashboard.putBoolean("Rotated", rotated);
+    elevator.goToHeight(ElevatorConstants.SAFETURNHEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,14 +44,14 @@ public class Stow extends Command {
         return;
       }
     }
-    endEffector.GoToRot(targetRotations);
+    endEffector.stow();;
     if (!rotated) {
       rotated = endEffector.atTargetAngle();
       if (!rotated) {
         return;
       }
     }
-    elevator.goToHeight(targetHeight);
+    elevator.stow();
   }
 
   // Called once the command ends or is interrupted.

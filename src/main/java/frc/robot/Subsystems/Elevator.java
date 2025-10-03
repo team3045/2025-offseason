@@ -64,6 +64,10 @@ public class Elevator extends SubsystemBase {
     return GoToHeight(0);
   }
 
+  public void stow() {
+    goToHeight(0);
+  }
+
   @Override
   public void periodic() {
     numRotations = elevatorMotor1.getRotorPosition().getValueAsDouble();
