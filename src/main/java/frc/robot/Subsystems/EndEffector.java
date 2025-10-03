@@ -120,7 +120,7 @@ public class EndEffector extends SubsystemBase {
   public void periodic() {
     currRot = encoderTop.getAbsolutePosition().getValueAsDouble() - zero;
     double rotDiff = 0;
-    rotDiff = currRot - targetRot;
+    rotDiff = Math.abs(currRot - targetRot);
 
     double speed = (rotDiff/SPEEDDOWN) * turnDir;
     SmartDashboard.putNumber("EndEffector/CurrRot", currRot);
