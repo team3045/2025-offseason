@@ -76,10 +76,10 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(drivetrain.DriveFoward()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 
     public Command fullAutoscore(int poleNum, int height) {
-        return goToScorePos(poleNum).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
+        return goToScorePos(poleNum).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(drivetrain.DriveFoward()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 }
