@@ -23,7 +23,7 @@ public class AutoScoreCoralFactory {
     public boolean isRight = false;
 
     private Translation2d midpoint(Translation2d a, Translation2d b) {
-        return new Translation2d(a.getX() + (b.getX() - a.getX())/2, a.getY() + (b.getY() - a.getY())/2);
+        return new Translation2d((b.getX() + a.getX())/2, (b.getY() + a.getY())/2);
     }
 
     private int getScorePole() {
