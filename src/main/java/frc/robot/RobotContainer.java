@@ -78,11 +78,11 @@ public class RobotContainer {
   }
 
   public Command IntakeCoral() {
-    return effector.Stow().andThen(elevator.Stow()).andThen(intake.Intake());
+    return new Stow().andThen(intake.Intake());
   }
 
   public Command OuttakeCoral() {
-    return effector.Stow().andThen(elevator.GoToHeight(1)).onlyWhile(effector.AtTargetAngle()).andThen(intake.Outtake());
+    return new Stow().andThen(new GoToHeightAndAngle(1, 0)).andThen(intake.Outtake());
   }
 
   public RobotContainer() {
