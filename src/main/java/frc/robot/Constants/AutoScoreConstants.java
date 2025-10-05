@@ -56,8 +56,6 @@ public class AutoScoreConstants {
         FlippingUtil.flipFieldPose(ALGAEPOSESRED[5])
     };
 
-    public static Pose2d BARGEPOSEBLUE = new Pose2d(new Translation2d(), new Rotation2d());
-    public static Pose2d BARGEPOSERED = new Pose2d(new Translation2d(), new Rotation2d());
     public static double BARGEELEVATORHEIGHT = 2;
     public static double BARGEENDEFFECTORANGLE = 0.5;
 
@@ -69,11 +67,11 @@ public class AutoScoreConstants {
     };
 
     public static double[] ALGAEGRABHEIGHTS = {
-        0.6,
-        0.8
+        0.5,
+        0.7
     };
 
-    public static double ALGAEGRABANGLE = -40;
+    public static double ALGAEGRABANGLE = 0.9;
 
     public static double[] SCORE_ANGLES = {
         0.547,
@@ -86,7 +84,4 @@ public class AutoScoreConstants {
         new Translation2d(4, 4),
         new Translation2d(13.69, 4)
     };
-
-    public static double BACKUP_DIST = 1;
-    public static double FRONT_DIST = 1;
 }

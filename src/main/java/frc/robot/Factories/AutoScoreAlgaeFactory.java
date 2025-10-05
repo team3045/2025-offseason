@@ -64,14 +64,7 @@ public class AutoScoreAlgaeFactory {
         else
             return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> ALGAEPOSESRED[algaeNum]);
     }
-
-    private static Command goToBargePose() {
-        if (DriverStation.getAlliance().get() == Alliance.Blue)
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> BARGEPOSEBLUE);
-        else
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> BARGEPOSERED);
-    }
-
+    
     public Command fullGrab() {
         algaeNum = getAlgaeNum();
         return goToPose().alongWith(new GoToHeightAndAngle(getAlgaeGrabHeight(), ALGAEGRABANGLE)).andThen(drivetrain.DriveFoward()).andThen(effector.Intake()).until(effector.HasAlgae()).withTimeout(1).andThen(effector.Stop()).andThen(drivetrain.DriveBack()).andThen(new Stow());
