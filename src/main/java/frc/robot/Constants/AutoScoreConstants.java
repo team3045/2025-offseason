@@ -38,7 +38,7 @@ public class AutoScoreConstants {
         FlippingUtil.flipFieldPose(POLEPOSESBLUE[11])
     };
 
-    public static Pose2d[] ALGAEPOSESRED = {
+    public static Pose2d[] ALGAEPOSESBLUE = {
         new Pose2d(new Translation2d(3.18, 4.0), new Rotation2d(Units.degreesToRadians(0))),
         new Pose2d(new Translation2d(3.85, 2.82), new Rotation2d(Units.degreesToRadians(60))),
         new Pose2d(new Translation2d(5.15, 2.85), new Rotation2d(Units.degreesToRadians(120))),
@@ -47,13 +47,13 @@ public class AutoScoreConstants {
         new Pose2d(new Translation2d(3.18, 5.16), new Rotation2d(Units.degreesToRadians(300)))
     };
 
-    public static Pose2d[] ALGAEPOSESBLUE = {
-        FlippingUtil.flipFieldPose(ALGAEPOSESRED[0]),
-        FlippingUtil.flipFieldPose(ALGAEPOSESRED[1]),
-        FlippingUtil.flipFieldPose(ALGAEPOSESRED[2]),
-        FlippingUtil.flipFieldPose(ALGAEPOSESRED[3]),
-        FlippingUtil.flipFieldPose(ALGAEPOSESRED[4]),
-        FlippingUtil.flipFieldPose(ALGAEPOSESRED[5])
+    public static Pose2d[] ALGAEPOSESRED = {
+        FlippingUtil.flipFieldPose(ALGAEPOSESBLUE[0]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESBLUE[1]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESBLUE[2]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESBLUE[3]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESBLUE[4]),
+        FlippingUtil.flipFieldPose(ALGAEPOSESBLUE[5])
     };
 
     public static double BARGEELEVATORHEIGHT = 2;
