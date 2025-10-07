@@ -82,7 +82,7 @@ public class RobotContainer {
   }
 
   public Command OuttakeCoral() {
-    return new Stow().andThen(new GoToHeightAndAngle(1, 0)).andThen(intake.Outtake());
+    return new Stow().andThen(new GoToHeightAndAngle(1, 0)).andThen(intake.Outtake()).andThen(new Stow());
   }
 
   public RobotContainer() {

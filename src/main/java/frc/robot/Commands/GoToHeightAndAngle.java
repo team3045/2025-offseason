@@ -30,24 +30,24 @@ public class GoToHeightAndAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
-    SmartDashboard.putBoolean("Rotated", rotated);
+    SmartDashboard.putBoolean("GoTo/AtSafeHeight", isAtSafeHeight);
+    SmartDashboard.putBoolean("GoTo/Rotated", rotated);
     elevator.goToHeight(ElevatorConstants.SAFETURNHEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
-    SmartDashboard.putBoolean("Rotated", rotated);
+    SmartDashboard.putBoolean("GoTo/AtSafeHeight", isAtSafeHeight);
+    SmartDashboard.putBoolean("GoTo/Rotated", rotated);
     if (!isAtSafeHeight) {
       isAtSafeHeight = elevator.atTargetHeight();
       if (!isAtSafeHeight) {
         return;
       }
     }
-    endEffector.goToRotations(targetRotations);
     if (!rotated) {
+      endEffector.goToRotations(targetRotations);
       rotated = endEffector.atTargetAngle();
       if (!rotated) {
         return;
@@ -63,6 +63,6 @@ public class GoToHeightAndAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atTargetHeight() && endEffector.atTargetAngle() && rotated;
+    return elevator.atTargetHeight() && rotated;
   }
 }

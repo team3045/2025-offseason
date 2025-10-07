@@ -33,6 +33,7 @@ public class EndEffector extends SubsystemBase {
   private Supplier<Distance> coralSupplier;
   private Supplier<Distance> algaeSupplier;
   private int turnDir;
+  private boolean reachedTargetAngle;
 
   public EndEffector() {
     effectorMotor = new TalonFX(EFFECTORID, "Team 3045");
@@ -47,10 +48,12 @@ public class EndEffector extends SubsystemBase {
     targetRot = 0;
     isEffectorRunning = false;
     dirMult = 1;
+    reachedTargetAngle = false;
   }
 
   public void stow() {
     turnDir = STOWDIR;
+    reachedTargetAngle = false;
     goToRot(STOWANGLE);
   }
 
@@ -59,6 +62,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   private void goToRot(double TargetRot) {
+    reachedTargetAngle = false;
     targetRot = TargetRot;
   }
 
@@ -67,11 +71,13 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void goToRotations(double targetRot) {
+    reachedTargetAngle = false;
     turnDir = -STOWDIR;
     goToRot(targetRot);
   }
 
   public void goToAngleDegrees(double angle) {
+    reachedTargetAngle = false;
     turnDir = -STOWDIR;
     goToRot(Units.degreesToRotations(angle));
   }
@@ -129,8 +135,17 @@ public class EndEffector extends SubsystemBase {
     SmartDashboard.putNumber("EndEffector/TargetRot", targetRot);
     
     if (Math.abs(rotDiff) > ANGLETOLERANCE) {
-      effectorTilterMotor.set(speed);
+      if (reachedTargetAngle) {
+        double holdSpeed = currRot - targetRot;
+        if (Math.abs(1 - currRot - targetRot) < Math.abs(holdSpeed)) {
+          holdSpeed = 1 - currRot - targetRot;
+        }
+        effectorTilterMotor.set(holdSpeed);
+      } else {
+        effectorTilterMotor.set(Math.min(Math.abs(speed), 0.4) * Math.signum(speed));
+      }
     } else {
+      reachedTargetAngle = true;
       effectorTilterMotor.set(0);
     }
     if (isEffectorRunning) {
