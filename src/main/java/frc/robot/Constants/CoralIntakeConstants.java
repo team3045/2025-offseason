@@ -19,4 +19,6 @@ public class CoralIntakeConstants {
     public static double ANGLETOLERANCE = 1;
     public static double INTAKELENGTHSECONDS = 5;
     public static double DEFAULTCANRANGEDIST = 0.1;
+
+    public static double CLEARWAYAMOUNT = 4;
 }

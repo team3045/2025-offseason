@@ -82,7 +82,7 @@ public class RobotContainer {
   }
 
   public Command OuttakeCoral() {
-    return new Stow().andThen(new GoToHeightAndAngle(1, 0)).andThen(intake.Outtake()).andThen(new Stow());
+    return new Stow().andThen(new GoToHeightAndAngle(0.7, 0.45)).andThen(intake.Outtake()).andThen(Commands.waitSeconds(1)).andThen(new Stow());
   }
 
   public RobotContainer() {
@@ -109,6 +109,7 @@ public class RobotContainer {
     joystick.square().onTrue(new GoToHeightAndAngle(0.7, 0.6));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
     joystick.cross().onTrue(new Stow());
+    joystick.L3().onTrue(intake.ClearWay());
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

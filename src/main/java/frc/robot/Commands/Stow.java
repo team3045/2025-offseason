@@ -4,8 +4,6 @@
 
 package frc.robot.Commands;
 
-import static frc.robot.Constants.EndEffectorConstants.STOWANGLE;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -18,33 +16,23 @@ public class Stow extends Command {
   /** Creates a new GoToHeightAndAngle. */
   private Elevator elevator = RobotContainer.elevator;
   private EndEffector endEffector = RobotContainer.effector;
-  private boolean isAtSafeHeight;
   private boolean rotated;
   public Stow() {
-    isAtSafeHeight = false;
     rotated = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
-    SmartDashboard.putBoolean("Rotated", rotated);
-    elevator.goToHeight(ElevatorConstants.SAFETURNHEIGHT);
+    SmartDashboard.putBoolean("GoTo/StowRotated", rotated);
+    rotated = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("AtSafeHeight", isAtSafeHeight);
-    SmartDashboard.putBoolean("Rotated", rotated);
-    if (!isAtSafeHeight) {
-      isAtSafeHeight = elevator.atTargetHeight();
-      if (!isAtSafeHeight) {
-        return;
-      }
-    }
-    endEffector.stow();;
+    SmartDashboard.putBoolean("GoTo/StowRotated", rotated);
+    endEffector.stow();
     if (!rotated) {
       rotated = endEffector.atTargetAngle();
       if (!rotated) {

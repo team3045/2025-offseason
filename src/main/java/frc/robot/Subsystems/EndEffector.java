@@ -134,13 +134,13 @@ public class EndEffector extends SubsystemBase {
     SmartDashboard.putNumber("EndEffector/RotDiff", speed);
     SmartDashboard.putNumber("EndEffector/TargetRot", targetRot);
     
-    if (Math.abs(rotDiff) > ANGLETOLERANCE) {
+    if (Math.signum((currRot - targetRot) * turnDir) != 1) {
       if (reachedTargetAngle) {
         double holdSpeed = currRot - targetRot;
         if (Math.abs(1 - currRot - targetRot) < Math.abs(holdSpeed)) {
           holdSpeed = 1 - currRot - targetRot;
         }
-        effectorTilterMotor.set(holdSpeed);
+        effectorTilterMotor.set(-holdSpeed);
       } else {
         effectorTilterMotor.set(Math.min(Math.abs(speed), 0.4) * Math.signum(speed));
       }

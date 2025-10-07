@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Subsystems.CoralHandler;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.EndEffector;
 
@@ -16,6 +17,7 @@ public class GoToHeightAndAngle extends Command {
   /** Creates a new GoToHeightAndAngle. */
   private Elevator elevator = RobotContainer.elevator;
   private EndEffector endEffector = RobotContainer.effector;
+  private CoralHandler coralIntake = RobotContainer.intake;
   private double targetHeight;
   private double targetRotations;
   private boolean isAtSafeHeight;
@@ -33,6 +35,9 @@ public class GoToHeightAndAngle extends Command {
     SmartDashboard.putBoolean("GoTo/AtSafeHeight", isAtSafeHeight);
     SmartDashboard.putBoolean("GoTo/Rotated", rotated);
     elevator.goToHeight(ElevatorConstants.SAFETURNHEIGHT);
+    isAtSafeHeight = false;
+    rotated = false;
+    coralIntake.clearWay();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

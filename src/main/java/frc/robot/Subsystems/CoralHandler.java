@@ -32,6 +32,7 @@ public class CoralHandler extends SubsystemBase {
 
   private double timeStarted;
   private double time;
+  private double topZero;
 
   public CoralHandler(EndEffector Effector) {
     roller = new TalonFX(ROLLERID, "Team 3045");
@@ -44,12 +45,19 @@ public class CoralHandler extends SubsystemBase {
     effector = Effector;
     timeStarted = Timer.getTimestamp();
     time = Timer.getTimestamp();
+    topZero = 0;
   }
 
   public void intake() {
     timeStarted = Timer.getTimestamp();
     prevState = HandlerState.INTAKING;
     state = HandlerState.MOVINGDOWN;
+  }
+
+  public void clearWay() {
+    timeStarted = Timer.getTimestamp();
+    prevState = HandlerState.CLEARINGWAY;
+    state = HandlerState.MOVINGUP;
   }
 
   public void outtake() {
@@ -76,6 +84,10 @@ public class CoralHandler extends SubsystemBase {
     return this.runOnce(() -> stow());
   }
 
+  public Command ClearWay() {
+    return this.runOnce(() -> clearWay());
+  }
+
   @Override
   public void periodic() {
     time = Timer.getTimestamp();
@@ -96,6 +108,7 @@ public class CoralHandler extends SubsystemBase {
         if (Math.abs(pivot.getTorqueCurrent().getValueAsDouble()) > 40 && Math.abs(pivot.getVelocity().getValueAsDouble()) < 0.1) {
           state = prevState;
           pivot.set(0.03);
+          topZero = pivot.getRotorPosition().getValueAsDouble();
         }
         break;
       case INTAKING:
@@ -130,6 +143,12 @@ public class CoralHandler extends SubsystemBase {
         effector.setRunning(false);
         prevState = HandlerState.STOWED;
         state = HandlerState.MOVINGUP;
+        break;
+      case CLEARINGWAY:
+        double pos = pivot.getRotorPosition().getValueAsDouble();
+        double dist = (topZero - pos) - CLEARWAYAMOUNT;
+        SmartDashboard.putNumber("CoralHandler/dist", dist);
+        pivot.set(dist/5);
         break;
     }
   }

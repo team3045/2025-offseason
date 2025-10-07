@@ -7,7 +7,8 @@ public class Helpers {
         OUTTAKING,
         IDLE,
         MOVINGDOWN,
-        MOVINGUP
+        MOVINGUP,
+        CLEARINGWAY
     }
 
     public static enum ClimberState {
