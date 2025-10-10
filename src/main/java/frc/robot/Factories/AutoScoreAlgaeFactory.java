@@ -60,9 +60,9 @@ public class AutoScoreAlgaeFactory {
     private static Command goToPose() {
         algaeNum = Helpers.clamp(algaeNum, 0, 5);
         if (DriverStation.getAlliance().get() == Alliance.Blue)
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> ALGAEPOSESBLUE[algaeNum]);
+            return new DriveToPose(drivetrain, () -> drivetrain.getState(), () -> ALGAEPOSESBLUE[algaeNum]);
         else
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> ALGAEPOSESRED[algaeNum]);
+            return new DriveToPose(drivetrain, () -> drivetrain.getState(), () -> ALGAEPOSESRED[algaeNum]);
     }
     
     public Command fullGrab() {

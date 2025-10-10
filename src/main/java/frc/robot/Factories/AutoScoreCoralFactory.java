@@ -3,6 +3,7 @@ package frc.robot.Factories;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Helpers;
@@ -70,13 +71,13 @@ public class AutoScoreCoralFactory {
 
     public Command goToScorePos(int poleNum) {
         if (DriverStation.getAlliance().get() == Alliance.Blue)
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> POLEPOSESBLUE[poleNum]).withTimeout(2);
+            return new DriveToPose(drivetrain, () -> drivetrain.getState(), () -> POLEPOSESBLUE[poleNum]);
         else
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> POLEPOSESRED[poleNum]).withTimeout(2);
+            return new DriveToPose(drivetrain, () -> drivetrain.getState(), () -> POLEPOSESRED[poleNum]);
     }
 
     public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(drivetrain.DriveFoward()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
+        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(RobotContainer.poleHeight)).andThen(drivetrain.DriveFoward()).andThen(Commands.waitSeconds(1)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 
     public Command fullAutoscore(int poleNum, int height) {

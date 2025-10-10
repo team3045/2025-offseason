@@ -50,13 +50,11 @@ public class RobotContainer {
   private final CommandGenericHID buttonBoard = new CommandGenericHID(1);
   public static int poleHeight;
 
-  private IntegerSubscriber poleNumberSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
+  public IntegerSubscriber poleNumberSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
       .getIntegerTopic("Pole").subscribe(0);
-    private IntegerSubscriber heightSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
+  public IntegerSubscriber heightSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
       .getIntegerTopic("Height").subscribe(0);
   
-  // public final Intake intake = new Intake();
-
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final static EndEffector effector = new EndEffector();
   public final static CoralHandler intake = new CoralHandler(effector);
@@ -103,7 +101,7 @@ public class RobotContainer {
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     // joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
     // joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
-    joystick.L1().onTrue(scoreFactory.fullAutoscore(0, 2));
+    joystick.L1().onTrue(scoreFactory.fullAutoscore(2, 2));
     // joystick.L1().onTrue(scoreFactory.fullAutoscore((int) poleNumberSub.get(), (int) heightSub.get()));
     joystick.L2().onTrue(algaeFactory.fullGrab());
     joystick.square().onTrue(new GoToHeightAndAngle(0.7, 0.6));

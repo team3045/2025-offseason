@@ -10,18 +10,18 @@ import edu.wpi.first.math.util.Units;
 public class AutoScoreConstants {
     //Each pole in order
     public static Pose2d[] POLEPOSESBLUE = {
-        new Pose2d(new Translation2d(2.69, 3.79), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(new Translation2d(2.73, 3.79), new Rotation2d(Units.degreesToRadians(0))),
         new Pose2d(new Translation2d(2.73, 4.26), new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(new Translation2d(3.54, 5.51), new Rotation2d(Units.degreesToRadians(60))),
-        new Pose2d(new Translation2d(3.82, 5.70), new Rotation2d(Units.degreesToRadians(60))),
-        new Pose2d(new Translation2d(5.33, 5.59), new Rotation2d(Units.degreesToRadians(120))),
-        new Pose2d(new Translation2d(5.69, 5.31), new Rotation2d(Units.degreesToRadians(120))),
-        new Pose2d(new Translation2d(6.34, 4.05), new Rotation2d(Units.degreesToRadians(180))),
-        new Pose2d(new Translation2d(6.34, 3.75), new Rotation2d(Units.degreesToRadians(180))),
-        new Pose2d(new Translation2d(5.37, 2.47), new Rotation2d(Units.degreesToRadians(240))),
-        new Pose2d(new Translation2d(5.12, 2.23), new Rotation2d(Units.degreesToRadians(240))),
-        new Pose2d(new Translation2d(4.04, 2.39), new Rotation2d(Units.degreesToRadians(300))),
-        new Pose2d(new Translation2d(3.35, 2.66), new Rotation2d(Units.degreesToRadians(300)))
+        new Pose2d(new Translation2d(3.52, 5.49), new Rotation2d(Units.degreesToRadians(-60))),
+        new Pose2d(new Translation2d(3.82, 5.70), new Rotation2d(Units.degreesToRadians(-60))),
+        new Pose2d(new Translation2d(5.33, 5.59), new Rotation2d(Units.degreesToRadians(-120))),
+        new Pose2d(new Translation2d(5.69, 5.31), new Rotation2d(Units.degreesToRadians(-120))),
+        new Pose2d(new Translation2d(6.34, 4.05), new Rotation2d(Units.degreesToRadians(-180))),
+        new Pose2d(new Translation2d(6.34, 3.75), new Rotation2d(Units.degreesToRadians(-180))),
+        new Pose2d(new Translation2d(5.37, 2.47), new Rotation2d(Units.degreesToRadians(-240))),
+        new Pose2d(new Translation2d(5.12, 2.23), new Rotation2d(Units.degreesToRadians(-240))),
+        new Pose2d(new Translation2d(4.04, 2.39), new Rotation2d(Units.degreesToRadians(-300))),
+        new Pose2d(new Translation2d(3.35, 2.66), new Rotation2d(Units.degreesToRadians(-300)))
     };
     public static Pose2d[] POLEPOSESRED = {
         FlippingUtil.flipFieldPose(POLEPOSESBLUE[0]),
@@ -74,9 +74,9 @@ public class AutoScoreConstants {
     public static double ALGAEGRABANGLE = 0.9;
 
     public static double[] SCORE_ANGLES = {
-        0.547,
-        0.573,
-        0.6,
+        0.55,
+        0.55,
+        0.55,
         0.655
     };
 

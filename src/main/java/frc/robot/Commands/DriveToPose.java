@@ -1,158 +1,125 @@
-package frc.robot.Commands;
 
-import static frc.robot.Constants.DriveConstants.ROTATION_CONSTRAINTS;
-import static frc.robot.Constants.DriveConstants.TRANSLATION_CONSTRAINTS;
+package frc.robot.Commands;
 
 import java.util.function.Supplier;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.FlippingUtil;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commons.GeomUtil;
+import frc.robot.commons.GremlinLogger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
 
 /**
- * Command to drive to a pose.
+ * Drives to a specified pose.
  */
+//Joostin Magic
 public class DriveToPose extends Command {
-  private final PIDController xController;
-  private final PIDController yController;
-  private final ProfiledPIDController thetaController;
+    private final ProfiledPIDController driveController = new ProfiledPIDController(
+            DriveConstants.TRANSLATION_KP, DriveConstants.TRANSLATION_KI, DriveConstants.TRANSLATION_KD, 
+            new TrapezoidProfile.Constraints(0.0, 0.0), 0.02);
+    private final ProfiledPIDController thetaController = new ProfiledPIDController(
+            DriveConstants.ROTATION_KP, DriveConstants.ROTATION_KI, DriveConstants.ROTATION_KD, 
+            new TrapezoidProfile.Constraints(0.0, 0.0), 0.02);
+    private CommandSwerveDrivetrain driveSubsystem;
+    private Supplier<Pose2d> targetPoseSupplier;
+    private Supplier<SwerveDriveState> driveStateSupplier;
 
-  private final CommandSwerveDrivetrain drivetrainSubsystem;
-  private final Supplier<Pose2d> poseProvider;
-  private final Supplier<Pose2d> goalPoseSupplier;
+    private Translation2d lastSetpointTranslation;
+    private double driveErrorAbs;
+    private double thetaErrorAbs;
+    private double ffMinRadius = 0.05, ffMaxRadius = 0.8;
 
-  private Pose2d goalPose;
-
-  public static final StructPublisher<Pose2d> targetPosePublisher = NetworkTableInstance.getDefault()
-      .getStructTopic("DriveState/targetPose", Pose2d.struct).publish();
-
-  public DriveToPose(
-      CommandSwerveDrivetrain drivetrainSubsystem,
-      Supplier<Pose2d> poseProvider,
-      Supplier<Pose2d> goalPoseSup) {
-    this(drivetrainSubsystem, poseProvider, goalPoseSup, TRANSLATION_CONSTRAINTS, ROTATION_CONSTRAINTS);
-  }
-
-  public DriveToPose(
-      CommandSwerveDrivetrain drivetrainSubsystem,
-      Supplier<Pose2d> poseProvider,
-      Supplier<Pose2d> goalPoseSup,
-      TrapezoidProfile.Constraints xyConstraints,
-      TrapezoidProfile.Constraints omegaConstraints) {
-    this.drivetrainSubsystem = drivetrainSubsystem;
-    this.poseProvider = poseProvider;
-    this.goalPoseSupplier = goalPoseSup;
-
-    xController = new PIDController(DriveConstants.TRANSLATION_KP, DriveConstants.TRANSLATION_KI,
-        DriveConstants.TRANSLATION_KD);
-    yController = new PIDController(DriveConstants.TRANSLATION_KP, DriveConstants.TRANSLATION_KI,
-        DriveConstants.TRANSLATION_KI);
-    xController.setTolerance(DriveConstants.TRANLSATION_TOLLERANCE);
-    yController.setTolerance(DriveConstants.TRANLSATION_TOLLERANCE);
-    thetaController = new ProfiledPIDController(DriveConstants.ROTATION_KP, DriveConstants.ROTATION_KI,
-        DriveConstants.ROTATION_KD, omegaConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(Units.degreesToRadians(DriveConstants.ROTATION_TOLLERANCE));
-
-    resetPIDControllers();
-    
-    if(goalPoseSupplier.get() == null){
-      try {
-        throw new Exception("How the hell is this null");
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    goalPose = goalPoseSupplier.get();
-
-    addRequirements(this.drivetrainSubsystem);
-  }
-
-  @Override
-  public void initialize() {
-    resetPIDControllers();
-    
-    if(goalPoseSupplier.get() == null){
-      try {
-        throw new Exception("How the hell is this null");
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    goalPose = goalPoseSupplier.get();
-
-    thetaController.setGoal(goalPose.getRotation().getRadians());
-    xController.setSetpoint(goalPose.getX());
-    yController.setSetpoint(goalPose.getY());
-
-    targetPosePublisher.set(goalPose);
-  }
-
-  public boolean atGoal() {
-    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atGoal() 
-      && drivetrainSubsystem.getState().Speeds.vxMetersPerSecond < 0.1
-      && drivetrainSubsystem.getState().Speeds.vyMetersPerSecond < 0.1
-      && drivetrainSubsystem.getState().Speeds.omegaRadiansPerSecond < Units.degreesToRadians(5);
-  }
-
-  private void resetPIDControllers() {
-    var robotPose = poseProvider.get();
-    thetaController.reset(robotPose.getRotation().getRadians());
-  }
-
-  @Override
-  public void execute() {
-    if(goalPose == null){
-      initialize();
+    public DriveToPose(CommandSwerveDrivetrain driveSubsystem, Supplier<SwerveDriveState> stateSupplier, Supplier<Pose2d> targetPoseSupplier) {
+        this.driveSubsystem = driveSubsystem;
+        this.driveStateSupplier = stateSupplier;
+        this.targetPoseSupplier = targetPoseSupplier;
+        addRequirements(driveSubsystem);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
-    Pose2d robotPose = poseProvider.get();
-    // Drive to the goal
-    double xSpeed = xController.calculate(robotPose.getX());
-    if (xController.atSetpoint()) {
-      xSpeed = 0;
+    @Override
+    public void initialize() {
+        Pose2d currentPose = driveStateSupplier.get().Pose;
+        driveController.reset(
+                currentPose.getTranslation().getDistance(targetPoseSupplier.get().getTranslation()),
+                Math.min(
+                        0.0,
+                        -new Translation2d(driveSubsystem.getFieldRelativeChassisSpeeds().vxMetersPerSecond,
+                        driveSubsystem.getFieldRelativeChassisSpeeds().vyMetersPerSecond)
+                                .rotateBy(
+                                        targetPoseSupplier
+                                                .get()
+                                                .getTranslation()
+                                                .minus(driveStateSupplier.get().Pose.getTranslation())
+                                                .getAngle()
+                                                .unaryMinus())
+                                .getX()));
+        thetaController.reset(currentPose.getRotation().getRadians(),
+                driveStateSupplier.get().Speeds.omegaRadiansPerSecond);
+        lastSetpointTranslation = driveStateSupplier.get().Pose.getTranslation();
     }
 
-    double ySpeed = yController.calculate(robotPose.getY());
-    if (yController.atSetpoint()) {
-      ySpeed = 0;
+    @Override
+    public void execute() {
+        Pose2d currentPose = driveStateSupplier.get().Pose;
+        Pose2d targetPose = targetPoseSupplier.get();
+
+        GremlinLogger.debugLog("DriveToPose/currentPose", currentPose);
+        GremlinLogger.debugLog("DriveToPose/targetPose", targetPose);
+
+        double currentDistance = currentPose.getTranslation().getDistance(targetPoseSupplier.get().getTranslation());
+        double ffScaler = MathUtil.clamp(
+                (currentDistance - ffMinRadius) / (ffMaxRadius - ffMinRadius),
+                0.0,
+                1.0);
+        driveErrorAbs = currentDistance;
+        driveController.reset(
+                lastSetpointTranslation.getDistance(targetPose.getTranslation()),
+                driveController.getSetpoint().velocity);
+        double driveVelocityScalar = driveController.getSetpoint().velocity * ffScaler
+                + driveController.calculate(driveErrorAbs, 0.0);
+        if (currentDistance < driveController.getPositionTolerance())
+            driveVelocityScalar = 0.0;
+        lastSetpointTranslation = new Pose2d(
+                targetPose.getTranslation(),
+                currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle())
+                .transformBy(
+                        GeomUtil.transform2dFromTranslation(
+                                new Translation2d(driveController.getSetpoint().position, 0.0)))
+                .getTranslation();
+
+        // Calculate theta speed
+        double thetaVelocity = thetaController.getSetpoint().velocity * ffScaler
+                + thetaController.calculate(
+                        currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+        thetaErrorAbs = Math.abs(currentPose.getRotation().minus(targetPose.getRotation()).getRadians());
+        if (thetaErrorAbs < thetaController.getPositionTolerance())
+            thetaVelocity = 0.0;
+
+        // Command speeds
+        var driveVelocity = GeomUtil
+                .pose2dFromRotation(currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle())
+                .transformBy(GeomUtil.transform2dFromTranslation(new Translation2d(driveVelocityScalar, 0.0)))
+                .getTranslation();
+        driveSubsystem.setControl(driveSubsystem.driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(
+                driveVelocity.getX(), driveVelocity.getY(), thetaVelocity, currentPose.getRotation())));
     }
 
-    double omegaSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
-    if (thetaController.atGoal()) {
-      omegaSpeed = 0;
+    @Override
+    public void end(boolean interrupted) {
+        driveSubsystem.setControl(DriveConstants.APPLY_FIELD_SPEEDS.withSpeeds(new ChassisSpeeds()));
     }
 
-    drivetrainSubsystem.setControl(DriveConstants.APPLY_FIELD_SPEEDS
-        .withSpeeds(new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed)));
-      
-    SmartDashboard.putNumber("DriveState/X", xSpeed);
-    SmartDashboard.putNumber("DriveState/Y", ySpeed);
-    SmartDashboard.putNumber("DriveState/Theta", omegaSpeed);
-    SmartDashboard.putNumber("DriveState/GoalX", xController.getSetpoint());
-    SmartDashboard.putNumber("DriveState/GoalY", yController.getSetpoint());
-    SmartDashboard.putNumber("DriveState/GoalTheta", thetaController.getGoal().position);
-  }
-
-  @Override
-  public boolean isFinished() {
-    return atGoal();
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    drivetrainSubsystem.setControl(DriveConstants.brake);
-  }
+    @Override
+    public boolean isFinished() {
+        return targetPoseSupplier.get().equals(null) || (driveController.atGoal() && thetaController.atGoal());
+    }
 }

@@ -12,11 +12,16 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -50,6 +55,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    
+    private SwerveSetpointGenerator setpointGenerator;
+    private SwerveSetpoint previousSetpoint;
+    private RobotConfig config;
+    public final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -131,6 +142,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureSetpointGenerator();
     }
 
     /**
@@ -155,6 +167,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureSetpointGenerator();
     }
 
     /**
@@ -187,6 +200,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureSetpointGenerator();
     }
 
     /**
@@ -309,5 +323,54 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Command DriveFoward() {
         return applyRequest(() -> DriveConstants.driveForward).withTimeout(0.1);
+    }
+
+    public ChassisSpeeds getFieldRelativeChassisSpeeds(){
+        return ChassisSpeeds.fromRobotRelativeSpeeds(
+            getState().Speeds, getState().Pose.getRotation());
+    }
+
+    public SwerveRequest.ApplyRobotSpeeds driveRobotRelative(ChassisSpeeds speeds) {
+        // Note: it is important to not discretize speeds before or after
+        // using the setpoint generator, as it will discretize them for you
+        previousSetpoint = setpointGenerator.generateSetpoint(
+                previousSetpoint, // The previous setpoint
+                speeds, // The desired target speeds
+                0.02 // The loop time of the robot code, in seconds
+        );
+        return m_pathApplyRobotSpeeds
+                .withSpeeds(previousSetpoint.robotRelativeSpeeds())
+                .withWheelForceFeedforwardsX(previousSetpoint.feedforwards().robotRelativeForcesXNewtons())
+                .withWheelForceFeedforwardsY(previousSetpoint.feedforwards().robotRelativeForcesYNewtons()); // Method
+                                                                                                             // that
+                                                                                                             // will
+                                                                                                             // drive
+                                                                                                             // the
+                                                                                                             // robot
+                                                                                                             // given
+                                                                                                             // target
+                                                                                                             // module
+                                                                                                             // states
+    }
+
+    private void configureSetpointGenerator() {
+        RobotConfig config;
+        try {
+            config = RobotConfig.fromGUISettings();
+
+            setpointGenerator = new SwerveSetpointGenerator(
+                    config,
+                    10);
+
+            // Initialize the previous setpoint to the robot's current speeds & module
+            // states
+            ChassisSpeeds currentSpeeds = getState().Speeds; // Method to get current robot-relative chassis speeds
+            SwerveModuleState[] currentStates = getState().ModuleStates; // Method to get the current swerve module
+                                                                         // states
+            previousSetpoint = new SwerveSetpoint(currentSpeeds, currentStates,
+                    DriveFeedforwards.zeros(config.numModules));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
