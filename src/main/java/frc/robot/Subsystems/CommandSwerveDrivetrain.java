@@ -308,6 +308,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Command DriveFoward() {
-        return applyRequest(() -> DriveConstants.driveForward).withTimeout(0.2);
+        return applyRequest(() -> DriveConstants.driveForward).withTimeout(0.1);
     }
 }

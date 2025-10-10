@@ -61,8 +61,8 @@ public class AutoScoreConstants {
 
     public static double[] SCORE_HEIGHTS = {
         0,
-        0.256,
-        0.689,
+        0.3,
+        0.72,
         1.45
     };
 
@@ -76,7 +76,7 @@ public class AutoScoreConstants {
     public static double[] SCORE_ANGLES = {
         0.547,
         0.573,
-        0.585,
+        0.6,
         0.655
     };
 

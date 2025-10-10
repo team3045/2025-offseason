@@ -70,9 +70,9 @@ public class AutoScoreCoralFactory {
 
     public Command goToScorePos(int poleNum) {
         if (DriverStation.getAlliance().get() == Alliance.Blue)
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> POLEPOSESBLUE[poleNum]);
+            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> POLEPOSESBLUE[poleNum]).withTimeout(2);
         else
-            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> POLEPOSESRED[poleNum]);
+            return new DriveToPose(drivetrain, () -> drivetrain.getState().Pose, () -> POLEPOSESRED[poleNum]).withTimeout(2);
     }
 
     public Command fullAutoscore() {
@@ -80,6 +80,6 @@ public class AutoScoreCoralFactory {
     }
 
     public Command fullAutoscore(int poleNum, int height) {
-        return goToScorePos(poleNum).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(drivetrain.DriveFoward()).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
+        return goToScorePos(poleNum).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(drivetrain.DriveFoward()).andThen(Commands.waitSeconds(1)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 }

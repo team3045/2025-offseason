@@ -11,7 +11,7 @@ public class EndEffectorConstants {
     public static double SPEEDDOWN = 1;
     public static double HOLDSPEED = 0.01;
     public static double ANGLETOLERANCE = 0.1;
-    public static double EFFECTORSPEED = 1;
+    public static double EFFECTORSPEED = 0.25;
     public static double EFFECTORHOLDSPEED = -0.01;
     public static int CORALRANGEID = 37;
     public static int ALGAERANGEID = 36;

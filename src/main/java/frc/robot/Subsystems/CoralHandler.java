@@ -148,7 +148,7 @@ public class CoralHandler extends SubsystemBase {
         double pos = pivot.getRotorPosition().getValueAsDouble();
         double dist = (topZero - pos) - CLEARWAYAMOUNT;
         SmartDashboard.putNumber("CoralHandler/dist", dist);
-        pivot.set(dist/5);
+        pivot.set(dist/10);
         break;
     }
   }

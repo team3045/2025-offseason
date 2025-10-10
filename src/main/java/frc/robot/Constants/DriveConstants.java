@@ -17,18 +17,18 @@ public class DriveConstants {
     public static final double TRANSLATION_KP = 5;
     public static final double TRANSLATION_KI = 0;
     public static final double TRANSLATION_KD = 0;
-    public static final double TRANLSATION_TOLLERANCE = 0.1;
+    public static final double TRANLSATION_TOLLERANCE = 0.01;
 
-    public static final double ROTATION_KP = 5;
+    public static final double ROTATION_KP = 10;
     public static final double ROTATION_KI = 0;
     public static final double ROTATION_KD = 0;
-    public static final double ROTATION_TOLLERANCE = 0.1;
+    public static final double ROTATION_TOLLERANCE = 0.01;
 
     public static final double MAX_VELOCITY = 5;
     public static final double MAX_ACCELERATION = 2;
 
-    public static final double MAX_ROTATIONAL_VELOCITY = 1;
-    public static final double MAX_ROTATIONAL_ACCELERATION = 1;
+    public static final double MAX_ROTATIONAL_VELOCITY = 20;
+    public static final double MAX_ROTATIONAL_ACCELERATION = 2;
 
     public static final Constraints TRANSLATION_CONSTRAINTS = new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION);
     public static final Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(MAX_ROTATIONAL_VELOCITY, MAX_ROTATIONAL_ACCELERATION);

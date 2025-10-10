@@ -142,7 +142,7 @@ public class EndEffector extends SubsystemBase {
         }
         effectorTilterMotor.set(-holdSpeed);
       } else {
-        effectorTilterMotor.set(Math.min(Math.abs(speed), 0.4) * Math.signum(speed));
+        effectorTilterMotor.set(Math.max(Math.min(Math.abs(speed), 0.4), 0.02) * Math.signum(speed));
       }
     } else {
       reachedTargetAngle = true;

@@ -84,8 +84,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator/AtTarget", atTargetHeight());
     
     if (Math.abs(rotDiff) > 0.2) {
-      elevatorMotor1.set(Math.min(speed, 0.5));
-      elevatorMotor2.set(Math.min(speed, 0.5));
+      elevatorMotor1.set(Math.min(Math.abs(speed), 0.5) * Math.signum(speed));
+      elevatorMotor2.set(Math.min(Math.abs(speed), 0.5) * Math.signum(speed));
     } else {
       elevatorMotor1.set(HOLDSPEED);
       elevatorMotor2.set(HOLDSPEED);
