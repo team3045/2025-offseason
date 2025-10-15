@@ -17,7 +17,7 @@ public class EndEffectorConstants {
     public static int ALGAERANGEID = 36;
     public static double DEFAULTCORALDIST = 0.1;
     public static double DEFAULTALGAEDIST = 0.5;
-    public static double STOWANGLE = -0.02;
+    public static double STOWANGLE = -0.03;
     public static int STOWDIR = -1;
     public static double CORALINTAKEANGLE = Units.degreesToRotations(100);
     public static double ALGAEINTAKEANGLE = Units.degreesToRotations(-100);

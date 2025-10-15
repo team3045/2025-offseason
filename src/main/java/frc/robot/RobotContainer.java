@@ -97,17 +97,19 @@ public class RobotContainer {
 
   private void configureBindings() {
     joystick.R2().onTrue(IntakeCoral());
-    joystick.R3().onTrue(OuttakeCoral());
+    joystick.L2().onTrue(OuttakeCoral());
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     // joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
     // joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
-    joystick.L1().onTrue(scoreFactory.fullAutoscore(2, 2));
+    joystick.povUp().onTrue(scoreFactory.fullAutoscore(0, 1));
+    joystick.povDown().onTrue(scoreFactory.fullAutoscore(1, 1));
+    joystick.povLeft().onTrue(scoreFactory.fullAutoscore(0, 2));
+    joystick.povRight().onTrue(scoreFactory.fullAutoscore(1, 2));
     // joystick.L1().onTrue(scoreFactory.fullAutoscore((int) poleNumberSub.get(), (int) heightSub.get()));
-    joystick.L2().onTrue(algaeFactory.fullGrab());
+    // joystick.L2().onTrue(algaeFactory.fullGrab());
     joystick.square().onTrue(new GoToHeightAndAngle(0.7, 0.6));
     joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
     joystick.cross().onTrue(new Stow());
-    joystick.L3().onTrue(intake.ClearWay());
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically

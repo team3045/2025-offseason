@@ -10,8 +10,8 @@ import edu.wpi.first.math.util.Units;
 public class AutoScoreConstants {
     //Each pole in order
     public static Pose2d[] POLEPOSESBLUE = {
-        new Pose2d(new Translation2d(2.73, 3.79), new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(new Translation2d(2.73, 4.26), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(new Translation2d(2.73, 3.86), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(new Translation2d(2.73, 4.23), new Rotation2d(Units.degreesToRadians(0))),
         new Pose2d(new Translation2d(3.52, 5.49), new Rotation2d(Units.degreesToRadians(-60))),
         new Pose2d(new Translation2d(3.82, 5.70), new Rotation2d(Units.degreesToRadians(-60))),
         new Pose2d(new Translation2d(5.33, 5.59), new Rotation2d(Units.degreesToRadians(-120))),
@@ -61,8 +61,8 @@ public class AutoScoreConstants {
 
     public static double[] SCORE_HEIGHTS = {
         0,
-        0.3,
-        0.72,
+        0.28,
+        0.7,
         1.45
     };
 
