@@ -25,15 +25,13 @@ public class EndEffector extends SubsystemBase {
   private TalonFX effectorTilterMotor;
   private CANcoder encoderTop;
   public double targetRot;
-  private boolean isEffectorRunning;
-  private int dirMult;
-  private double zero;
   private CANrange coralRange;
   private CANrange algaeRange;
   private Supplier<Distance> coralSupplier;
   private Supplier<Distance> algaeSupplier;
-  private int turnDir;
-  private boolean reachedTargetAngle;
+  private boolean isEffectorRunning;
+  private int dirMult;
+  private double zero;
 
   public EndEffector() {
     effectorMotor = new TalonFX(EFFECTORID, "Team 3045");
@@ -43,17 +41,14 @@ public class EndEffector extends SubsystemBase {
     algaeRange = new CANrange(ALGAERANGEID, "Team 3045");
     coralSupplier = coralRange.getDistance().asSupplier();
     algaeSupplier = algaeRange.getDistance().asSupplier();
-    zero = encoderTop.getAbsolutePosition().getValueAsDouble();
-    currRot = zero;
+    zero = encoderTop.getPosition().getValueAsDouble();
+    currRot = 0;
     targetRot = 0;
-    isEffectorRunning = false;
     dirMult = 1;
-    reachedTargetAngle = false;
+    isEffectorRunning = false;
   }
 
   public void stow() {
-    turnDir = STOWDIR;
-    reachedTargetAngle = false;
     goToRot(STOWANGLE);
   }
 
@@ -62,7 +57,6 @@ public class EndEffector extends SubsystemBase {
   }
 
   private void goToRot(double TargetRot) {
-    reachedTargetAngle = false;
     targetRot = TargetRot;
   }
 
@@ -71,14 +65,10 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void goToRotations(double targetRot) {
-    reachedTargetAngle = false;
-    turnDir = -STOWDIR;
     goToRot(targetRot);
   }
 
   public void goToAngleDegrees(double angle) {
-    reachedTargetAngle = false;
-    turnDir = -STOWDIR;
     goToRot(Units.degreesToRotations(angle));
   }
 
@@ -124,30 +114,12 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    currRot = encoderTop.getAbsolutePosition().getValueAsDouble() - zero;
-    double rotDiff = 0;
-    rotDiff = Math.abs(currRot - targetRot);
-
-    double speed = (rotDiff/SPEEDDOWN) * turnDir;
+    currRot = encoderTop.getPosition().getValueAsDouble() - zero;
     SmartDashboard.putNumber("EndEffector/CurrRot", currRot);
-    SmartDashboard.putNumber("EndEffector/Zero", zero);
-    SmartDashboard.putNumber("EndEffector/RotDiff", speed);
-    SmartDashboard.putNumber("EndEffector/TargetRot", targetRot);
+    double speed = targetRot - currRot;
     
-    if (Math.signum((currRot - targetRot) * turnDir) != 1) {
-      if (reachedTargetAngle) {
-        double holdSpeed = currRot - targetRot;
-        if (Math.abs(1 - currRot - targetRot) < Math.abs(holdSpeed)) {
-          holdSpeed = 1 - currRot - targetRot;
-        }
-        effectorTilterMotor.set(-holdSpeed);
-      } else {
-        effectorTilterMotor.set(Math.min(Math.abs(speed), 0.4) * Math.signum(speed));
-      }
-    } else {
-      reachedTargetAngle = true;
-      effectorTilterMotor.set(0);
-    }
+    effectorTilterMotor.set(Math.min(Math.abs(speed), 0.25) * Math.signum(speed));
+    SmartDashboard.putNumber("EndEffector/Speed", speed);
     if (isEffectorRunning) {
       effectorMotor.set(EFFECTORSPEED * dirMult);
     } else {

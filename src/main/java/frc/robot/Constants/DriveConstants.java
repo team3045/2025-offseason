@@ -17,12 +17,12 @@ public class DriveConstants {
     public static final double TRANSLATION_KP = 6;
     public static final double TRANSLATION_KI = 0;
     public static final double TRANSLATION_KD = 0;
-    public static final double TRANLSATION_TOLLERANCE = 0.01;
+    public static final double TRANLSATION_TOLLERANCE = 0.005;
 
     public static final double ROTATION_KP = 6;
     public static final double ROTATION_KI = 0;
     public static final double ROTATION_KD = 0;
-    public static final double ROTATION_TOLLERANCE = 0.01;
+    public static final double ROTATION_TOLLERANCE = 0.005;
 
     public static final double MAX_VELOCITY = 5;
     public static final double MAX_ACCELERATION = 2;

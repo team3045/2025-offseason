@@ -61,9 +61,9 @@ public class AutoScoreConstants {
 
     public static double[] SCORE_HEIGHTS = {
         0,
-        0.28,
+        0.25,
         0.7,
-        1.45
+        1.375
     };
 
     public static double[] ALGAEGRABHEIGHTS = {
@@ -77,7 +77,7 @@ public class AutoScoreConstants {
         0.55,
         0.55,
         0.55,
-        0.655
+        0.575
     };
 
     public static Translation2d[] REEF_CENTERS = {

@@ -12,12 +12,12 @@ public class EndEffectorConstants {
     public static double HOLDSPEED = 0.01;
     public static double ANGLETOLERANCE = 0.05;
     public static double EFFECTORSPEED = 0.25;
-    public static double EFFECTORHOLDSPEED = -0.01;
+    public static double EFFECTORHOLDSPEED = 0.05;
     public static int CORALRANGEID = 37;
     public static int ALGAERANGEID = 36;
     public static double DEFAULTCORALDIST = 0.1;
     public static double DEFAULTALGAEDIST = 0.5;
-    public static double STOWANGLE = -0.03;
+    public static double STOWANGLE = -0.02;
     public static int STOWDIR = -1;
     public static double CORALINTAKEANGLE = Units.degreesToRotations(100);
     public static double ALGAEINTAKEANGLE = Units.degreesToRotations(-100);
