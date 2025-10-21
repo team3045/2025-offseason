@@ -77,9 +77,9 @@ public class RobotContainer {
     joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isLeft = false)); //Right
     joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isLeft = true)); //Left
     joystick.povUp().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 3)); //L4
-    joystick.povLeft().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 2)); //L3
-    joystick.povRight().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 1)); //L2
-    joystick.povDown().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 0)); //L1
+    joystick.povRight().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 2)); //L3
+    joystick.povDown().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 1)); //L2
+    joystick.povLeft().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 0)); //L1
     joystick.R3().onTrue(scoreFactory.fullAutoscore()); //Score
 
     joystick.cross().onTrue(new GoToHeightAndAngle(0, 0)); //Stow (moves to safe height and then stows)
