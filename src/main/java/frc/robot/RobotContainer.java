@@ -11,17 +11,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.networktables.IntegerPublisher;
-import edu.wpi.first.networktables.IntegerSubscriber;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.generated.TunerConstants;
 import frc.robot.vision.VisionConstants;
 import frc.robot.Commands.Stow;
@@ -47,13 +39,6 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
   private final GremlinPS4Controller joystick = new GremlinPS4Controller(0);
-  private final CommandGenericHID buttonBoard = new CommandGenericHID(1);
-  public static int poleHeight;
-
-  public IntegerSubscriber poleNumberSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
-      .getIntegerTopic("Pole").subscribe(0);
-  public IntegerSubscriber heightSub = NetworkTableInstance.getDefault().getTable("Scoring Location")
-      .getIntegerTopic("Height").subscribe(0);
   
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final static EndEffector effector = new EndEffector();
@@ -65,15 +50,6 @@ public class RobotContainer {
   public final static AutoScoreAlgaeFactory algaeFactory = new AutoScoreAlgaeFactory();
   
   public static Pose3d[] componentPoses = new Pose3d[8];
-
-  public void ConfigButtonBoard() {
-    buttonBoard.button(1).onTrue(Commands.runOnce(() -> poleHeight = 3));
-    buttonBoard.button(2).onTrue(Commands.runOnce(() -> poleHeight = 2));
-    buttonBoard.button(3).onTrue(Commands.runOnce(() -> poleHeight = 1));
-    buttonBoard.button(7).onTrue(Commands.runOnce(() -> poleHeight = 3));
-    buttonBoard.button(8).onTrue(Commands.runOnce(() -> poleHeight = 2));
-    buttonBoard.button(9).onTrue(Commands.runOnce(() -> poleHeight = 1));
-  }
 
   public Command IntakeCoral() {
     return new Stow().andThen(intake.Intake());
@@ -96,21 +72,20 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    joystick.R2().onTrue(IntakeCoral());
-    joystick.L2().onTrue(OuttakeCoral());
-    joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    // joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = true).andThen(scoreFactory.fullAutoscore()));
-    // joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isRight = false).andThen(scoreFactory.fullAutoscore()));
-    joystick.povUp().onTrue(scoreFactory.fullAutoscore(0, 3));
-    joystick.povDown().onTrue(scoreFactory.fullAutoscore(1, 3));
-    joystick.povLeft().onTrue(scoreFactory.fullAutoscore(0, 2));
-    joystick.povRight().onTrue(scoreFactory.fullAutoscore(1, 2));
-    joystick.L1().onTrue(scoreFactory.fullAutoscore(0, 1));
-    joystick.R1().onTrue(scoreFactory.fullAutoscore(1, 1));
-    joystick.square().onTrue(new GoToHeightAndAngle(1.625, 0.575));
-    joystick.circle().onTrue(scoreFactory.ejectCoral());
-    joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb());
-    joystick.cross().onTrue(new Stow());
+    joystick.R2().onTrue(IntakeCoral()); //Intake
+    joystick.L2().onTrue(OuttakeCoral()); //Outtake
+    joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric())); //Zero
+    joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isLeft = false)); //Right
+    joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isLeft = true)); //Left
+    joystick.povUp().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 3)); //L4
+    joystick.povLeft().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 2)); //L3
+    joystick.povRight().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 1)); //L2
+    joystick.povDown().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 0)); //L1
+    joystick.R3().onTrue(scoreFactory.fullAutoscore()); //Score
+
+    joystick.cross().onTrue(new GoToHeightAndAngle(0, 0)); //Stow (moves to safe height and then stows)
+    joystick.circle().onTrue(scoreFactory.ejectCoral()); //Eject coral
+    joystick.triangle().OnPressTwice(climber.MoveOut(), climber.Climb()); //Climb (one press move out, second press move in)
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -141,11 +116,5 @@ public class RobotContainer {
     NamedCommands.registerCommand("2GrabAlgae", algaeFactory.fullGrab(2));
     NamedCommands.registerCommand("3GrabAlgae", algaeFactory.fullGrab(3));
     NamedCommands.registerCommand("4GrabAlgae", algaeFactory.fullGrab(4));
-  //   NamedCommands.registerCommand("intake", 
-  //     intake.goToAngleDegrees(IntakeConstants.minAngle)
-  //       .andThen(intake.applyDownwardCurrentFront()) // could be upward who knows
-  //       //.andThen(Commands.waitUntil(nextMechanism.hasCoral?))
-  //       .andThen(intake.stow()).alongWith(intake.zeroCurrentFront())
-  //     );
   }
 }

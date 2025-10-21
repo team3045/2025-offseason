@@ -13,7 +13,6 @@ import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.GoToHeightAndAngle;
 import frc.robot.Commands.Stow;
 import frc.robot.Subsystems.CommandSwerveDrivetrain;
-import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.EndEffector;
 
 import static frc.robot.Constants.AutoScoreConstants.*;
@@ -21,7 +20,6 @@ import static frc.robot.Constants.AutoScoreConstants.*;
 /** Add your docs here. */
 public class AutoScoreAlgaeFactory {
     private static CommandSwerveDrivetrain drivetrain = RobotContainer.drivetrain;
-    private static Elevator elevator = RobotContainer.elevator;
     private static EndEffector effector = RobotContainer.effector;
     private static int algaeNum = 1;
 
