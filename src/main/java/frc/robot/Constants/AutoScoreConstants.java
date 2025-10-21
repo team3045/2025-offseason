@@ -63,7 +63,7 @@ public class AutoScoreConstants {
         0,
         0.25,
         0.7,
-        1.375
+        1.385
     };
 
     public static double[] ALGAEGRABHEIGHTS = {

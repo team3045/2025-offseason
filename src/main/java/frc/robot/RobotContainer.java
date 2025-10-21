@@ -10,12 +10,16 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import dev.doglog.DogLogOptions;
 import static edu.wpi.first.units.Units.*;
+
+import java.util.Set;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.generated.TunerConstants;
 import frc.robot.vision.VisionConstants;
-import frc.robot.Commands.Stow;
 import frc.robot.Factories.AutoScoreAlgaeFactory;
 import frc.robot.Factories.AutoScoreCoralFactory;
 import frc.robot.Subsystems.Climber;
@@ -38,6 +42,9 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
   private final GremlinPS4Controller joystick = new GremlinPS4Controller(0);
+
+  public static boolean isLeft = false;
+  public static int scoreHeight = 1;
   
   public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final static EndEffector effector = new EndEffector();
@@ -45,7 +52,7 @@ public class RobotContainer {
   public final static Elevator elevator = new Elevator();
   public final static Climber climber = new Climber();
   public final static Vision vision = new Vision(VisionConstants.cameraIndeces);
-  public final static AutoScoreCoralFactory scoreFactory = new AutoScoreCoralFactory();
+  public static AutoScoreCoralFactory scoreFactory = new AutoScoreCoralFactory();
   public final static AutoScoreAlgaeFactory algaeFactory = new AutoScoreAlgaeFactory();
   
   public static Pose3d[] componentPoses = new Pose3d[8];
@@ -74,13 +81,13 @@ public class RobotContainer {
     joystick.R2().onTrue(IntakeCoral()); //Intake
     joystick.L2().onTrue(OuttakeCoral()); //Outtake
     joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric())); //Zero
-    joystick.R1().onTrue(Commands.runOnce(() -> scoreFactory.isLeft = false)); //Right
-    joystick.L1().onTrue(Commands.runOnce(() -> scoreFactory.isLeft = true)); //Left
-    joystick.povUp().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 3)); //L4
-    joystick.povRight().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 2)); //L3
-    joystick.povDown().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 1)); //L2
-    joystick.povLeft().onTrue(Commands.runOnce(() -> scoreFactory.scoreHeight = 0)); //L1
-    joystick.R3().onTrue(scoreFactory.fullAutoscore()); //Score
+    joystick.R1().onTrue(Commands.runOnce(() -> isLeft = false)); //Right
+    joystick.L1().onTrue(Commands.runOnce(() -> isLeft = true)); //Left
+    joystick.povUp().onTrue(Commands.runOnce(() -> scoreHeight = 3)); //L4
+    joystick.povRight().onTrue(Commands.runOnce(() -> scoreHeight = 2)); //L3
+    joystick.povDown().onTrue(Commands.runOnce(() -> scoreHeight = 1)); //L2
+    joystick.povLeft().onTrue(Commands.runOnce(() -> scoreHeight = 0)); //L1
+    joystick.R3().onTrue(Commands.runOnce(() -> scoreFactory.fullAutoscore(isLeft, scoreHeight).schedule())); //Score
 
     joystick.cross().onTrue(new GoToHeightAndAngle(0, 0)); //Stow (moves to safe height and then stows)
     joystick.circle().onTrue(scoreFactory.ejectCoral()); //Eject coral

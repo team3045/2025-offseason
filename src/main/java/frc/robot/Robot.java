@@ -27,6 +27,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putBoolean("ScorePos/IsLeft", RobotContainer.isLeft);
+    SmartDashboard.putNumber("ScorePos/Height", RobotContainer.scoreHeight);
   }
 
   @Override

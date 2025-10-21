@@ -1,11 +1,12 @@
 package frc.robot.Factories;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Helpers;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.GoToHeightAndAngle;
@@ -15,38 +16,35 @@ import frc.robot.Subsystems.EndEffector;
 
 import static frc.robot.Constants.AutoScoreConstants.*;
 
+import java.util.function.Supplier;
+
 public class AutoScoreCoralFactory {
     private static CommandSwerveDrivetrain drivetrain = RobotContainer.drivetrain;
     private static EndEffector effector = RobotContainer.effector;
-    public boolean isLeft = false;
-    public int scoreHeight = 3;
 
-    private Translation2d midpoint(Translation2d a, Translation2d b) {
-        return new Translation2d((b.getX() + a.getX())/2, (b.getY() + a.getY())/2);
-    }
-
-    private int getScorePole() {
+    public int getScorePole(boolean isLeft) {
         int scorePole = 0;
         double minDist = 1000000;
         for (int i = 0; i < 6; i ++) {
-            Translation2d trans;
+            Rotation2d rot;
             if (DriverStation.getAlliance().get() == Alliance.Blue) {
-                trans = midpoint(POLEPOSESBLUE[2 * i].getTranslation(), POLEPOSESBLUE[2 * i + 1].getTranslation());
+                rot = POLEPOSESBLUE[(2 * i)].getRotation();
             } else {
-                trans = midpoint(POLEPOSESRED[2 * i].getTranslation(), POLEPOSESRED[2 * i + 1].getTranslation());
+                rot = POLEPOSESRED[(2 * i)].getRotation();
             }
-            double dist = drivetrain.getState().Pose.getTranslation().getDistance(trans);
+            double dist = Math.abs(drivetrain.getState().Pose.getRotation().getDegrees() - rot.getDegrees());
             if (dist < minDist) {
                 minDist = dist;
                 scorePole = i * 2;
             }
         }
         if (isLeft) scorePole ++;
+        SmartDashboard.putNumber("ScorePos/PoleNum", scorePole);
         return scorePole;
     }
 
     public Command goToElevatorHeightAndEffectorAngle(int height) {
-        return new GoToHeightAndAngle(SCORE_HEIGHTS[Helpers.clamp(height, 0, 3)], SCORE_ANGLES[Helpers.clamp(height, 0, 3)]);
+        return new GoToHeightAndAngle(SCORE_HEIGHTS[height], SCORE_ANGLES[height]);
     }
 
     public Command ejectCoral() {
@@ -60,8 +58,8 @@ public class AutoScoreCoralFactory {
             return new DriveToPose(drivetrain, () -> drivetrain.getState(), () -> POLEPOSESRED[poleNum]);
     }
 
-    public Command fullAutoscore() {
-        return goToScorePos(getScorePole()).alongWith(goToElevatorHeightAndEffectorAngle(scoreHeight)).andThen(drivetrain.DriveFoward()).andThen(Commands.waitSeconds(1)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
+    public Command fullAutoscore(boolean isLeft, int height) {
+        return goToScorePos(getScorePole(isLeft)).alongWith(goToElevatorHeightAndEffectorAngle(height)).andThen(drivetrain.DriveFoward()).andThen(Commands.waitSeconds(1)).andThen(ejectCoral()).andThen(drivetrain.DriveBack()).andThen(effector.Stop()).andThen(new Stow());
     }
 
     public Command fullAutoscore(int poleNum, int height) {

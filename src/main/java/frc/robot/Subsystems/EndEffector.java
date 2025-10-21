@@ -118,7 +118,7 @@ public class EndEffector extends SubsystemBase {
     SmartDashboard.putNumber("EndEffector/CurrRot", currRot);
     double speed = targetRot - currRot;
     
-    effectorTilterMotor.set(Math.min(Math.abs(speed), 0.25) * Math.signum(speed));
+    effectorTilterMotor.set(Math.min(Math.abs(speed), 0.35) * Math.signum(speed));
     SmartDashboard.putNumber("EndEffector/Speed", speed);
     if (isEffectorRunning) {
       effectorMotor.set(EFFECTORSPEED * dirMult);
